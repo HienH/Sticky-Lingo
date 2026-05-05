@@ -3,6 +3,7 @@
     "name": "sticky-lingo",
     "slug": "sticky-lingo",
     "version": "1.0.0",
+    "scheme": "stickylingo",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
