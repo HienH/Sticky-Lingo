@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   useFonts,
   Nunito_400Regular,
@@ -19,5 +20,9 @@ export default function RootLayout() {
     return null;
   }
 
-  return <Stack />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack />
+    </GestureHandlerRootView>
+  );
 }
