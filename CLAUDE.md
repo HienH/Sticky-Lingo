@@ -44,7 +44,7 @@ No other libraries without asking.
 
 ## Design System
 
-All styling comes from `constants/theme.ts`. Never inline colors, font sizes, or spacing values in components.
+All styling comes from `theme/index.ts`. Never inline colors, font sizes, or spacing values in components.
 
 - Colors: import from `theme.colors`
 - Typography: import from `theme.typography` (Nunito font family)
@@ -54,7 +54,7 @@ All styling comes from `constants/theme.ts`. Never inline colors, font sizes, or
 
 Use React Native's StyleSheet API. NativeWind/Tailwind is not used.
 
-If a component needs a value not in theme.ts, add it to theme.ts first, then use it. Never hardcode hex codes, font sizes, or spacing pixels in components.
+If a component needs a value not in `theme/index.ts`, add it there first, then use it. Never hardcode hex codes, font sizes, or spacing pixels in components.
 
 Brand identity: warm and approachable. Coral primary (#FF6B5B), generous whitespace, friendly Nunito typography. The vibe is "you already know more than you think" — encouraging, not academic.
 
