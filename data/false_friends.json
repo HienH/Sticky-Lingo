@@ -1,0 +1,247 @@
+[
+  {
+    "spanish_word": "actual",
+    "looks_like": "actual",
+    "actually_means": "current/present",
+    "real_spanish": "real/verdadero",
+    "example_sentence": "El presidente actual = The current president"
+  },
+  {
+    "spanish_word": "actualmente",
+    "looks_like": "actually",
+    "actually_means": "currently",
+    "real_spanish": "en realidad/de hecho",
+    "example_sentence": "Actualmente vivo en México = Currently I live in Mexico"
+  },
+  {
+    "spanish_word": "aplicar",
+    "looks_like": "to apply (for a job)",
+    "actually_means": "to apply (a substance)",
+    "real_spanish": "solicitar",
+    "example_sentence": "Aplicar la crema = Apply the cream"
+  },
+  {
+    "spanish_word": "arena",
+    "looks_like": "arena",
+    "actually_means": "sand",
+    "real_spanish": "estadio/arena",
+    "example_sentence": "La arena de la playa = The beach sand"
+  },
+  {
+    "spanish_word": "asistir",
+    "looks_like": "to assist",
+    "actually_means": "to attend",
+    "real_spanish": "ayudar",
+    "example_sentence": "Voy a asistir a la reunión = I'll attend the meeting"
+  },
+  {
+    "spanish_word": "bizarro",
+    "looks_like": "bizarre",
+    "actually_means": "brave/generous",
+    "real_spanish": "extraño/raro",
+    "example_sentence": "Un soldado bizarro = A brave soldier"
+  },
+  {
+    "spanish_word": "campo",
+    "looks_like": "camp",
+    "actually_means": "field/countryside",
+    "real_spanish": "campamento",
+    "example_sentence": "Vivo en el campo = I live in the countryside"
+  },
+  {
+    "spanish_word": "carpeta",
+    "looks_like": "carpet",
+    "actually_means": "folder",
+    "real_spanish": "alfombra",
+    "example_sentence": "Pon los documentos en la carpeta = Put the docs in the folder"
+  },
+  {
+    "spanish_word": "compromiso",
+    "looks_like": "compromise",
+    "actually_means": "commitment/obligation",
+    "real_spanish": "acuerdo mutuo",
+    "example_sentence": "Tengo un compromiso = I have a commitment"
+  },
+  {
+    "spanish_word": "conductor",
+    "looks_like": "conductor (music)",
+    "actually_means": "driver",
+    "real_spanish": "director (de orquesta)",
+    "example_sentence": "El conductor del autobús = The bus driver"
+  },
+  {
+    "spanish_word": "constipado",
+    "looks_like": "constipated",
+    "actually_means": "having a cold",
+    "real_spanish": "estreñido",
+    "example_sentence": "Estoy constipado = I have a cold"
+  },
+  {
+    "spanish_word": "contestar",
+    "looks_like": "to contest",
+    "actually_means": "to answer/reply",
+    "real_spanish": "disputar",
+    "example_sentence": "Contesta el teléfono = Answer the phone"
+  },
+  {
+    "spanish_word": "desgracia",
+    "looks_like": "disgrace",
+    "actually_means": "misfortune",
+    "real_spanish": "vergüenza/deshonra",
+    "example_sentence": "Por desgracia = Unfortunately"
+  },
+  {
+    "spanish_word": "embarazada",
+    "looks_like": "embarrassed",
+    "actually_means": "pregnant",
+    "real_spanish": "avergonzado/a",
+    "example_sentence": "Ella está embarazada = She is pregnant"
+  },
+  {
+    "spanish_word": "enviar",
+    "looks_like": "to envy",
+    "actually_means": "to send",
+    "real_spanish": "envidiar",
+    "example_sentence": "Voy a enviar el paquete = I'll send the package"
+  },
+  {
+    "spanish_word": "fábrica",
+    "looks_like": "fabric",
+    "actually_means": "factory",
+    "real_spanish": "tela/tejido",
+    "example_sentence": "Trabaja en una fábrica = He works in a factory"
+  },
+  {
+    "spanish_word": "introducir",
+    "looks_like": "to introduce (a person)",
+    "actually_means": "to insert/enter",
+    "real_spanish": "presentar",
+    "example_sentence": "Introducir la contraseña = Enter the password"
+  },
+  {
+    "spanish_word": "inversión",
+    "looks_like": "inversion",
+    "actually_means": "investment",
+    "real_spanish": "inversión (de orden)",
+    "example_sentence": "Una buena inversión = A good investment"
+  },
+  {
+    "spanish_word": "largo",
+    "looks_like": "large",
+    "actually_means": "long",
+    "real_spanish": "grande",
+    "example_sentence": "Un camino largo = A long road"
+  },
+  {
+    "spanish_word": "lectura",
+    "looks_like": "lecture",
+    "actually_means": "reading",
+    "real_spanish": "conferencia",
+    "example_sentence": "La lectura del libro = The reading of the book"
+  },
+  {
+    "spanish_word": "librería",
+    "looks_like": "library",
+    "actually_means": "bookstore",
+    "real_spanish": "biblioteca",
+    "example_sentence": "Compré el libro en la librería = I bought the book at the bookstore"
+  },
+  {
+    "spanish_word": "molestar",
+    "looks_like": "to molest",
+    "actually_means": "to bother/annoy",
+    "real_spanish": "abusar sexualmente",
+    "example_sentence": "No me molestes = Don't bother me"
+  },
+  {
+    "spanish_word": "once",
+    "looks_like": "once",
+    "actually_means": "eleven (number 11)",
+    "real_spanish": "una vez",
+    "example_sentence": "Son las once = It's eleven o'clock"
+  },
+  {
+    "spanish_word": "pariente",
+    "looks_like": "parent",
+    "actually_means": "relative",
+    "real_spanish": "padre/madre",
+    "example_sentence": "Es mi pariente = He's my relative"
+  },
+  {
+    "spanish_word": "pretender",
+    "looks_like": "to pretend",
+    "actually_means": "to try/attempt/aim",
+    "real_spanish": "fingir",
+    "example_sentence": "Pretendo ser mejor = I aim to be better"
+  },
+  {
+    "spanish_word": "propaganda",
+    "looks_like": "propaganda",
+    "actually_means": "advertising",
+    "real_spanish": "propaganda (political)",
+    "example_sentence": "La propaganda de la tienda = The store's advertising"
+  },
+  {
+    "spanish_word": "realizar",
+    "looks_like": "realize",
+    "actually_means": "to carry out/accomplish",
+    "real_spanish": "darse cuenta",
+    "example_sentence": "Vamos a realizar el proyecto = We will carry out the project"
+  },
+  {
+    "spanish_word": "recordar",
+    "looks_like": "to record",
+    "actually_means": "to remember",
+    "real_spanish": "grabar",
+    "example_sentence": "No recuerdo = I don't remember"
+  },
+  {
+    "spanish_word": "remover",
+    "looks_like": "to remove",
+    "actually_means": "to stir",
+    "real_spanish": "quitar/eliminar",
+    "example_sentence": "Remover la sopa = Stir the soup"
+  },
+  {
+    "spanish_word": "ropa",
+    "looks_like": "rope",
+    "actually_means": "clothes",
+    "real_spanish": "cuerda/soga",
+    "example_sentence": "Necesito comprar ropa = I need to buy clothes"
+  },
+  {
+    "spanish_word": "sensible",
+    "looks_like": "sensible",
+    "actually_means": "sensitive",
+    "real_spanish": "sensato",
+    "example_sentence": "Es una persona muy sensible = He's a very sensitive person"
+  },
+  {
+    "spanish_word": "soportar",
+    "looks_like": "to support",
+    "actually_means": "to tolerate/bear",
+    "real_spanish": "apoyar",
+    "example_sentence": "No lo soporto = I can't stand it"
+  },
+  {
+    "spanish_word": "suceso",
+    "looks_like": "success",
+    "actually_means": "event/happening",
+    "real_spanish": "éxito",
+    "example_sentence": "Un suceso importante = An important event"
+  },
+  {
+    "spanish_word": "tuna",
+    "looks_like": "tuna (fish)",
+    "actually_means": "prickly pear fruit",
+    "real_spanish": "atún",
+    "example_sentence": "La tuna es muy dulce = The prickly pear is very sweet"
+  },
+  {
+    "spanish_word": "éxito",
+    "looks_like": "exit",
+    "actually_means": "success",
+    "real_spanish": "salida",
+    "example_sentence": "Fue un gran éxito = It was a great success"
+  }
+]

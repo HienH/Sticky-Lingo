@@ -36,6 +36,15 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# python (importer is dev-only)
+__pycache__/
+*.pyc
+venv/
+.venv/
+env/
+scripts/.venv/
+scripts/venv/
+
 # generated native folders
 /ios
 /android

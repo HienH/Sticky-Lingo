@@ -1,0 +1,156 @@
+[
+  {
+    "english_ending": "-al",
+    "spanish_ending": "-al",
+    "example": "natural → natural",
+    "count_estimate": "500+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ant/-ent",
+    "spanish_ending": "-ante/-ente",
+    "example": "important → importante",
+    "count_estimate": "200+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ary",
+    "spanish_ending": "-ario",
+    "example": "salary → salario",
+    "count_estimate": "150+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ble",
+    "spanish_ending": "-ble",
+    "example": "possible → posible",
+    "count_estimate": "300+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ct (verb)",
+    "spanish_ending": "-ctar/-cto",
+    "example": "correct → correcto",
+    "count_estimate": "100+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ence/-ance",
+    "spanish_ending": "-encia/-ancia",
+    "example": "distance → distancia",
+    "count_estimate": "300+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ic",
+    "spanish_ending": "-ico/a",
+    "example": "music → música",
+    "count_estimate": "300+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ism",
+    "spanish_ending": "-ismo",
+    "example": "capitalism → capitalismo",
+    "count_estimate": "200+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ist",
+    "spanish_ending": "-ista",
+    "example": "artist → artista",
+    "count_estimate": "150+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ive",
+    "spanish_ending": "-ivo/a",
+    "example": "active → activo",
+    "count_estimate": "200+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ly (adverb)",
+    "spanish_ending": "-mente",
+    "example": "normally → normalmente",
+    "count_estimate": "500+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ment",
+    "spanish_ending": "-mento/-miento",
+    "example": "moment → momento",
+    "count_estimate": "200+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-or",
+    "spanish_ending": "-or",
+    "example": "doctor → doctor",
+    "count_estimate": "200+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ous",
+    "spanish_ending": "-oso",
+    "example": "curious → curioso",
+    "count_estimate": "150+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ous",
+    "spanish_ending": "-oso/a",
+    "example": "famous → famoso",
+    "count_estimate": "200+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ous/-ious",
+    "spanish_ending": "-oso/-ioso",
+    "example": "nervous → nervioso",
+    "count_estimate": "200+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-phy/-gy",
+    "spanish_ending": "-fía/-gía",
+    "example": "philosophy → filosofía",
+    "count_estimate": "100+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-sion",
+    "spanish_ending": "-sión",
+    "example": "version → versión",
+    "count_estimate": "200+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-tion",
+    "spanish_ending": "-ción",
+    "example": "nation → nación",
+    "count_estimate": "1000+",
+    "reliability": "Very High"
+  },
+  {
+    "english_ending": "-ty",
+    "spanish_ending": "-dad",
+    "example": "reality → realidad",
+    "count_estimate": "300+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "-ure",
+    "spanish_ending": "-ura",
+    "example": "culture → cultura",
+    "count_estimate": "100+",
+    "reliability": "High"
+  },
+  {
+    "english_ending": "ph- (any)",
+    "spanish_ending": "f-",
+    "example": "phone → fono/teléfono",
+    "count_estimate": "50+",
+    "reliability": "Very High"
+  }
+]
