@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   useFonts,
@@ -7,6 +8,7 @@ import {
   Nunito_700Bold,
   Nunito_800ExtraBold,
 } from '@expo-google-fonts/nunito';
+import { theme } from '../theme';
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
@@ -17,7 +19,9 @@ export default function RootLayout() {
   });
 
   if (!fontsLoaded) {
-    return null;
+    return (
+      <View style={{ flex: 1, backgroundColor: theme.colors.background }} />
+    );
   }
 
   return (

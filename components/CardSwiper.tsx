@@ -1,5 +1,5 @@
-import { ReactNode, useCallback, useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,
@@ -10,8 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { theme } from '../theme';
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const SWIPE_DISTANCE_THRESHOLD = SCREEN_WIDTH * 0.25;
+const SWIPE_DISTANCE_RATIO = 0.25;
 const SWIPE_VELOCITY_THRESHOLD = 500;
 const OFF_SCREEN_DURATION = 200;
 
@@ -22,8 +21,27 @@ type Props<T> = {
 };
 
 export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
+  const { width: screenWidth } = useWindowDimensions();
   const [index, setIndex] = useState(0);
+
   const translateX = useSharedValue(0);
+  const indexSV = useSharedValue(0);
+  const lastIndexSV = useSharedValue(data.length - 1);
+
+  useEffect(() => {
+    indexSV.value = index;
+  }, [index, indexSV]);
+
+  useEffect(() => {
+    lastIndexSV.value = data.length - 1;
+  }, [data.length, lastIndexSV]);
+
+  // Hold the outgoing card off-screen until React commits the new index,
+  // then snap to 0 so the new card appears at center. Avoids a one-frame
+  // flash of the previous card at translateX = 0.
+  useLayoutEffect(() => {
+    translateX.value = 0;
+  }, [index, translateX]);
 
   const commitIndex = useCallback(
     (next: number) => {
@@ -33,18 +51,15 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
     [onCardChange]
   );
 
-  const total = data.length;
-  const lastIndex = total - 1;
+  const distanceThreshold = screenWidth * SWIPE_DISTANCE_RATIO;
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
       translateX.value = e.translationX;
     })
     .onEnd((e) => {
-      const passedDistance =
-        Math.abs(e.translationX) > SWIPE_DISTANCE_THRESHOLD;
-      const passedVelocity =
-        Math.abs(e.velocityX) > SWIPE_VELOCITY_THRESHOLD;
+      const passedDistance = Math.abs(e.translationX) > distanceThreshold;
+      const passedVelocity = Math.abs(e.velocityX) > SWIPE_VELOCITY_THRESHOLD;
 
       if (!passedDistance && !passedVelocity) {
         translateX.value = withSpring(0);
@@ -52,20 +67,21 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
       }
 
       const swipingRight = e.translationX > 0;
-      const nextIndex = swipingRight ? index + 1 : index - 1;
+      const currentIndex = indexSV.value;
+      const lastIndex = lastIndexSV.value;
+      const nextIndex = swipingRight ? currentIndex + 1 : currentIndex - 1;
 
       if (nextIndex < 0 || nextIndex > lastIndex) {
         translateX.value = withSpring(0);
         return;
       }
 
-      const offScreen = swipingRight ? SCREEN_WIDTH : -SCREEN_WIDTH;
+      const target = swipingRight ? screenWidth : -screenWidth;
       translateX.value = withTiming(
-        offScreen,
+        target,
         { duration: OFF_SCREEN_DURATION },
         (finished) => {
           if (finished) {
-            translateX.value = 0;
             runOnJS(commitIndex)(nextIndex);
           }
         }
@@ -76,17 +92,15 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
     transform: [{ translateX: translateX.value }],
   }));
 
-  if (total === 0) {
-    return null;
-  }
+  if (data.length === 0) return null;
 
-  const safeIndex = Math.min(index, lastIndex);
+  const safeIndex = Math.max(0, Math.min(index, data.length - 1));
 
   return (
     <View style={styles.container}>
       <View style={styles.counter} pointerEvents="none">
         <Text style={styles.counterText}>
-          {safeIndex + 1} / {total}
+          {safeIndex + 1} / {data.length}
         </Text>
       </View>
       <GestureDetector gesture={pan}>
