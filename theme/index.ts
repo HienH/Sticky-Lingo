@@ -107,6 +107,15 @@ export const animation = {
   },
 } as const;
 
+export const gesture = {
+  // Fraction of screen width a swipe must travel to count as a card change
+  swipeDistanceRatio: 0.25,
+  // Velocity (px/sec) above which a short swipe still counts
+  swipeVelocityThreshold: 500,
+  // Duration (ms) for the off-screen exit animation
+  offScreenDuration: 200,
+} as const;
+
 export const theme = {
   colors,
   typography,
@@ -114,6 +123,7 @@ export const theme = {
   radius,
   shadow,
   animation,
+  gesture,
 } as const;
 
 export type Theme = typeof theme;

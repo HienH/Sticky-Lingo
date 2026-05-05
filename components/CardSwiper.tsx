@@ -10,10 +10,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { theme } from '../theme';
 
-const SWIPE_DISTANCE_RATIO = 0.25;
-const SWIPE_VELOCITY_THRESHOLD = 500;
-const OFF_SCREEN_DURATION = 200;
-
 type Props<T> = {
   data: T[];
   renderCard: (item: T, index: number) => ReactNode;
@@ -51,7 +47,9 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
     [onCardChange]
   );
 
-  const distanceThreshold = screenWidth * SWIPE_DISTANCE_RATIO;
+  const distanceThreshold = screenWidth * theme.gesture.swipeDistanceRatio;
+  const velocityThreshold = theme.gesture.swipeVelocityThreshold;
+  const offScreenDuration = theme.gesture.offScreenDuration;
 
   const pan = Gesture.Pan()
     .onUpdate((e) => {
@@ -59,7 +57,7 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
     })
     .onEnd((e) => {
       const passedDistance = Math.abs(e.translationX) > distanceThreshold;
-      const passedVelocity = Math.abs(e.velocityX) > SWIPE_VELOCITY_THRESHOLD;
+      const passedVelocity = Math.abs(e.velocityX) > velocityThreshold;
 
       if (!passedDistance && !passedVelocity) {
         translateX.value = withSpring(0);
@@ -79,7 +77,7 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
       const target = swipingRight ? screenWidth : -screenWidth;
       translateX.value = withTiming(
         target,
-        { duration: OFF_SCREEN_DURATION },
+        { duration: offScreenDuration },
         (finished) => {
           if (finished) {
             runOnJS(commitIndex)(nextIndex);
@@ -105,7 +103,11 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
       </View>
       <GestureDetector gesture={pan}>
         <Animated.View style={[styles.cardWrap, animatedStyle]}>
-          {renderCard(data[safeIndex], safeIndex)}
+          {/* key per index forces remount so per-card state (Stage 2 flip,
+              Stage 3 typing) doesn't leak across swipes */}
+          <View key={safeIndex} style={styles.cardSlot}>
+            {renderCard(data[safeIndex], safeIndex)}
+          </View>
         </Animated.View>
       </GestureDetector>
     </View>
@@ -133,6 +135,11 @@ const styles = StyleSheet.create({
     color: theme.colors.textSecondary,
   },
   cardWrap: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cardSlot: {
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
