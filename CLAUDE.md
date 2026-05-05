@@ -36,7 +36,7 @@ STOP and ask before adding any of these:
 - Expo (managed workflow) + TypeScript
 - Expo Router (file-based navigation)
 - Zustand + persist middleware (state management)
-- expo-sqlite (offline word data + progress)
+- expo-sqlite (offline word data only — immutable content)
 - react-native-reanimated (swipe gestures and card transitions)
 - react-native-gesture-handler (swipe detection)
 
@@ -99,6 +99,7 @@ Always accessible from tab navigator. Scrollable reference of all 20 pattern rul
 - Offline-first. Everything works without internet.
 - Let the data drive the UI. One word model serves all stages.
 - Keep it simple. This is V0.
+- **State split:** SQLite holds immutable content (words, emojis, conjugations). All user/progress state — including which words have been seen, the word counter, and onboarding flags — lives in Zustand and persists via AsyncStorage. SQLite is never written to at runtime after initial seeding.
 
 ## Card Swiper Component
 
@@ -131,4 +132,6 @@ When tasks are independent, spawn agents in parallel. When sequential, chain the
 
 (Update this section after each completed task.)
 
-Nothing yet. Starting from scratch.
+- `theme/index.ts` — design tokens (colors, typography, spacing, radius, shadow), Nunito font loading.
+- `db/schema.ts` — `words` table SQL + `Word` / `WordRow` / `Conjugations` types. Unique on `(spanish_word, stage)`.
+- `db/client.ts` — `initDB()` and `getWordsByStage(stage)`. No write functions; user state lives in Zustand.
