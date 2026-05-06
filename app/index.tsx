@@ -12,7 +12,7 @@ type StageTile = {
   title: string;
   subtitle: string;
   accent: string;
-  route: '/stage1' | '/stage2' | '/stage3' | null;
+  route: '/stage1' | '/stage2' | '/stage3' | '/stage4' | null;
 };
 
 export default function Home() {
@@ -52,7 +52,7 @@ export default function Home() {
       title: 'Verbs',
       subtitle: `${stageCounts[4] ?? 0} verbs`,
       accent: theme.colors.stage4,
-      route: null,
+      route: '/stage4',
     },
     {
       stage: 5,
