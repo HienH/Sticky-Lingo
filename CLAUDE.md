@@ -91,25 +91,27 @@ The runtime seeder in `db/client.ts` reads all four and runs `INSERT OR IGNORE`,
 - Cheat sheet sections are captured now for future UI; not surfaced in V0. Section slugs are stable: `gender_rules`, `eria_suffix`, `past_participles`, `subjunctive_weirdo`, `subjunctive_vowel_swap`, `loners_dijon`, `vin_diesel`. The importer must fix two title/body misalignments in the source xlsx: the `NICE TO HAVE` banner (row 104) is a category divider, not a footnote on past participles; the `VIN DIESEL: irregular command verbs` header (row 145) is the real title for section 7, not a footnote on LONERS/DIJON.
 - **-ería belongs in `cheat_sheets`, NOT `patterns`.** The `patterns` table is for English→Spanish ending rewrites (e.g. `-tion → -ción`); -ería is a Spanish-internal derivational suffix (`pan → panadería`) with no English ending involved.
 
+### Done in V0 (formerly deferred)
+- ✅ **-ería section** dual-written into Stage 1 cards (39 net new). Each row emits a derived "shop" card (`category="-ería suffix"`, hook `"base (meaning) + -ería = derived"`) and a base card (`category="-ería base"`); cross-sheet dedupe drops base words already in earlier Stage-1 sheets so the better hook wins. Source content stays in `cheat_sheets.eria_suffix` for future reference UI.
+- ✅ **Past participles section** promoted to Stage 4 verb cards (31 verbs across `-ar/-er/-ir/irregular`, `category="Past participle: <group>"`). Source content stays in `cheat_sheets.past_participles`.
+
 ### Deferred opportunities (V1, not V0)
-- **-ería section** (25 base→derived word pairs) could later dual-write into Stage 1 cards — same shape as "Spanish for Spanish" (compound breakdown).
-- **Past participles section** (~27 example verbs across -ar/-er/-ir + irregulars) is a natural source for the 20–30 hardcoded Stage 4 verbs mentioned above.
 - **Gender rules + LONERS/DIJON** overlap heavily; if a "gender quiz" feature ever appears, both sections can feed a normalized `gender_rules (ending, gender, reliability, exceptions[])` table. For V0, leave as two separate `cheat_sheets` rows since the source author intentionally presents them as different mnemonics.
 
 ## Stages
 
-### Stage 1: Easy Words (613 words from 4 sheets)
-Sources: Easy Associations (215), Smart Hooks (246), Themed Cognates (64), Spanish for Spanish (88 standard + 19 net new from CONFUSING PAIRS, after dedupe).
+### Stage 1: Easy Words (652 words from 5 sources)
+Sources: Easy Associations (215), Smart Hooks (246), Themed Cognates (64), Spanish for Spanish (88 standard + 19 net new from CONFUSING PAIRS, after dedupe), -ería suffix promotions (~39 net new: 23 derived "shop" words + 16 base words not already covered by earlier sheets).
 Card: emoji + Spanish word + memory hook (when present). No English translation needed.
 
 ### Stage 2: Formal English (221 words)
-Source sheet: "Formal English = Spanish" (227 raw rows; 3 section-header rows skipped + 3 NOUNS/ADJECTIVES duplicates dropped by `(spanish_word, stage)` dedupe → 221 emitted). Card: emoji + Spanish word + formal English cognate + everyday English meaning. Tap to flip for example sentence. Grouped by category (Daily, Business, Medical) — user picks category first, then swipes.
+Source sheet: "Formal English = Spanish" (227 raw rows; 3 section-header rows skipped + 3 NOUNS/ADJECTIVES collisions merged into single cards with both meanings → 221 emitted). The 3 merged cards (`exterior`, `inferior`, `superior`) carry combined `english_meaning` like `"outside (n.) / outer (adj.)"`. Card: emoji + Spanish word + formal English cognate + everyday English meaning. Tap to flip for example sentence. Grouped by category (Daily, Business, Medical) — user picks category first, then swipes.
 
 ### Stage 3: Cognates by Pattern (~20 patterns, 366 words)
 Source sheets: "Cognates by Pattern" (380 raw rows; 14 PATTERN section-header rows skipped → 366 emitted) + "Pattern Cheat Sheet" (22 ending rules in `patterns` table). First screen: ~20 patterns as tappable cards. Tap pattern → swipeable deck for that pattern. Last card in each deck: typing input to test conversion (accept with or without accents).
 
-### Stage 4: Verbs (104 verbs from Formal English, +20–30 hardcoded common verbs to come)
-Source: verbs from "Formal English" sheet (dual-written by importer, 104 verbs across `-ar: 76, -er: 10, -ir: 18`) + 20–30 hardcoded common verbs added separately later. First screen: conjugation cheat sheet (-AR/-ER/-IR rules, yo/tú/él). Then swipeable verb cards: infinitive, English meaning, verb family tag, conjugations, mini example sentence. (`conjugations` is `null` on every imported verb today; population comes when the hardcoded verb list is added.)
+### Stage 4: Verbs (132 verbs)
+Sources: verbs from "Formal English" sheet (dual-written by importer, 101 cognate verbs after Stage-4 dedupe) + 31 past-participle example verbs promoted from the cheat_sheets `past_participles` section (`-ar: 8`, `-er: 6`, `-ir: 5`, irregular: 12). Past-participle verbs win the dedupe over Formal English cognates for 3 overlaps (`decidir`, `descubrir`, `resolver`) — those still appear as Stage 2 cards. First screen: conjugation cheat sheet (-AR/-ER/-IR rules, yo/tú/él). Then swipeable verb cards: infinitive, English meaning, verb family tag, conjugations, mini example sentence. (`conjugations` is `null` on every imported verb today; population comes when a hardcoded verb list is added later if needed — the 132 cards may already be enough.)
 
 ### Stage 5: Coming Soon
 Placeholder screen only.
@@ -176,5 +178,5 @@ When tasks are independent, spawn agents in parallel. When sequential, chain the
   - `false_friends` (anti-cognates reference) — UNIQUE on `spanish_word`
   - `cheat_sheets` (grammar reference content, 7 sections) — UNIQUE on `section`
 - `db/client.ts` — `initDB()` creates all 4 tables + indices and runs `seedFromJSON()` (single transaction, `INSERT OR IGNORE` for all 4 datasets, count-check gate to skip on already-seeded DBs). `getWordsByStage(stage)` getter present. No runtime write functions; user state lives in Zustand.
-- `scripts/import_data.py` — parses xlsx → emits `data/words.json` (1304 rows: stage1=613, stage2=221, stage3=366, stage4=104), `data/patterns.json` (22), `data/false_friends.json` (35), `data/cheat_sheets.json` (7 sections). Idempotent — byte-identical re-runs.
+- `scripts/import_data.py` — parses xlsx → emits `data/words.json` (1371 rows: stage1=652, stage2=221, stage3=366, stage4=132), `data/patterns.json` (22), `data/false_friends.json` (35), `data/cheat_sheets.json` (7 sections). Idempotent — byte-identical re-runs. Promotes -ería pairs to Stage 1 and past participles to Stage 4 from cheat_sheets data; merges NOUN/ADJ duplicates in Formal English into single cards instead of dropping.
 - `scripts/requirements.txt` — pins `openpyxl`.

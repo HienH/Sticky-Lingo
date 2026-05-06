@@ -845,6 +845,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "cafetería",
+    "english_meaning": "coffee shop / cafeteria",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "café (coffee) + -ería = cafetería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
+    "spanish_word": "café",
+    "english_meaning": "coffee",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "☕",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
     "spanish_word": "caliente",
     "english_meaning": "hot",
     "formal_english": null,
@@ -1001,6 +1027,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "carnicería",
+    "english_meaning": "butcher shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "carne (meat) + -ería = carnicería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "carpeta",
     "english_meaning": "folder",
     "formal_english": null,
@@ -1154,6 +1193,19 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Unlocks English",
+    "stage": 1
+  },
+  {
+    "spanish_word": "cervecería",
+    "english_meaning": "brewery / beer bar",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "cerveza (beer) + -ería = cervecería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -2366,6 +2418,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "droga",
+    "english_meaning": "drug",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "droguería",
+    "english_meaning": "drugstore / pharmacy",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "droga (drug) + -ería = droguería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "ducir/traer (to lead/bring)",
     "english_meaning": null,
     "formal_english": null,
@@ -2899,6 +2977,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "ferrete",
+    "english_meaning": "iron",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
     "spanish_word": "ferretería",
     "english_meaning": "hardware store",
     "formal_english": null,
@@ -2938,6 +3029,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "flor",
+    "english_meaning": "flower",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "🌸",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "floristería",
+    "english_meaning": "flower shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "flor (flower) + -ería = floristería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "forte/fuerte",
     "english_meaning": "strong",
     "formal_english": null,
@@ -2974,6 +3091,19 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Food",
+    "stage": 1
+  },
+  {
+    "spanish_word": "frutería",
+    "english_meaning": "fruit shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "fruta (fruit) + -ería = frutería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -3325,6 +3455,32 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Pictionary",
+    "stage": 1
+  },
+  {
+    "spanish_word": "herrería",
+    "english_meaning": "blacksmith / ironworks",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "hierro (iron) + -ería = herrería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
+    "spanish_word": "hierro",
+    "english_meaning": "iron",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
     "stage": 1
   },
   {
@@ -3796,6 +3952,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "joya",
+    "english_meaning": "jewel",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "joyería",
+    "english_meaning": "jewelry store",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "joya (jewel) + -ería = joyería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "jueves",
     "english_meaning": "Thursday",
     "formal_english": null,
@@ -3887,6 +4069,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "lavandería",
+    "english_meaning": "laundromat",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "lavar (wash) + -ería = lavandería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "lavaplatos",
     "english_meaning": "dishwasher",
     "formal_english": null,
@@ -3900,6 +4095,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "lavar",
+    "english_meaning": "wash",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
     "spanish_word": "leche",
     "english_meaning": "milk",
     "formal_english": null,
@@ -3910,6 +4118,19 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Pictionary",
+    "stage": 1
+  },
+  {
+    "spanish_word": "lechería",
+    "english_meaning": "dairy shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "leche (milk) + -ería = lechería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -3991,6 +4212,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "librería",
+    "english_meaning": "bookstore",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "libro (book) + -ería = librería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
+    "spanish_word": "libro",
+    "english_meaning": "book",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "📚",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
     "spanish_word": "licencia",
     "english_meaning": "license",
     "formal_english": null,
@@ -4066,6 +4313,32 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Unlocks English",
+    "stage": 1
+  },
+  {
+    "spanish_word": "llantas",
+    "english_meaning": "tires",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "llantería",
+    "english_meaning": "tire shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "llantas (tires) + -ería = llantería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -4706,6 +4979,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "mueble",
+    "english_meaning": "furniture",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "mueblería",
+    "english_meaning": "furniture store",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "mueble (furniture) + -ería = mueblería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "muebles",
     "english_meaning": "furniture",
     "formal_english": null,
@@ -5200,6 +5499,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "papel",
+    "english_meaning": "paper",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "📄",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "papelería",
+    "english_meaning": "stationery store",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "papel (paper) + -ería = papelería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "para",
     "english_meaning": "for/in order to",
     "formal_english": null,
@@ -5304,6 +5629,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "pastel",
+    "english_meaning": "cake",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "🍰",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "pastelería",
+    "english_meaning": "cake shop / patisserie",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "pastel (cake) + -ería = pastelería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "patio",
     "english_meaning": "patio/yard",
     "formal_english": null,
@@ -5366,6 +5717,32 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Compound",
+    "stage": 1
+  },
+  {
+    "spanish_word": "pelo",
+    "english_meaning": "hair",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "peluquería",
+    "english_meaning": "barber / hair salon",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "pelo (hair) + -ería = peluquería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -5447,6 +5824,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "pescadería",
+    "english_meaning": "fish market",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "pescado (fish) + -ería = pescadería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "pescado",
     "english_meaning": "fish (caught)",
     "formal_english": null,
@@ -5509,6 +5899,32 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Medical Latin",
+    "stage": 1
+  },
+  {
+    "spanish_word": "pintura",
+    "english_meaning": "paint",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "pinturería",
+    "english_meaning": "paint store",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "pintura (paint) + -ería = pinturería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -6331,6 +6747,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "reloj",
+    "english_meaning": "watch",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": "🕒",
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
+    "spanish_word": "relojería",
+    "english_meaning": "watch repair shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "reloj (watch) + -ería = relojería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "relámpago",
     "english_meaning": "lightning",
     "formal_english": null,
@@ -7124,6 +7566,19 @@
     "stage": 1
   },
   {
+    "spanish_word": "taquería",
+    "english_meaning": "taco shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "taco (taco) + -ería = taquería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
     "spanish_word": "tasa",
     "english_meaning": "rate",
     "formal_english": null,
@@ -7446,6 +7901,19 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Food you know",
+    "stage": 1
+  },
+  {
+    "spanish_word": "tortillería",
+    "english_meaning": "tortilla shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "tortilla (tortilla) + -ería = tortillería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -7839,6 +8307,32 @@
     "stage": 1
   },
   {
+    "spanish_word": "vidrería",
+    "english_meaning": "glass shop",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "vidrio (glass) + -ería = vidrería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
+    "stage": 1
+  },
+  {
+    "spanish_word": "vidrio",
+    "english_meaning": "glass",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería base",
+    "stage": 1
+  },
+  {
     "spanish_word": "viejo",
     "english_meaning": "old",
     "formal_english": null,
@@ -7940,6 +8434,19 @@
     "verb_family": null,
     "conjugations": null,
     "category": "Unlocks English",
+    "stage": 1
+  },
+  {
+    "spanish_word": "zapatería",
+    "english_meaning": "shoe store",
+    "formal_english": null,
+    "example_sentence": null,
+    "emoji": null,
+    "memory_hook": "zapato (shoe) + -ería = zapatería",
+    "pattern_id": null,
+    "verb_family": null,
+    "conjugations": null,
+    "category": "-ería suffix",
     "stage": 1
   },
   {
@@ -8984,7 +9491,7 @@
   },
   {
     "spanish_word": "exterior",
-    "english_meaning": "outside",
+    "english_meaning": "outside (n.) / outside / outer (adj.)",
     "formal_english": "exterior",
     "example_sentence": "El exterior de la casa = The outside of the house",
     "emoji": null,
@@ -9270,7 +9777,7 @@
   },
   {
     "spanish_word": "inferior",
-    "english_meaning": "lower / below",
+    "english_meaning": "lower / below (n.) / lower / worse (adj.)",
     "formal_english": "inferior",
     "example_sentence": "La parte inferior = The bottom part",
     "emoji": null,
@@ -10609,7 +11116,7 @@
   },
   {
     "spanish_word": "superior",
-    "english_meaning": "upper / higher / boss",
+    "english_meaning": "upper / higher / boss (n.) / higher / better / top (adj.)",
     "formal_english": "superior",
     "example_sentence": "La parte superior = The top part",
     "emoji": null,
@@ -15613,6 +16120,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "abrir",
+    "english_meaning": "to open",
+    "formal_english": null,
+    "example_sentence": "He abierto la puerta = I've opened the door",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: irregular",
+    "stage": 4
+  },
+  {
     "spanish_word": "administrar",
     "english_meaning": "manage / run",
     "formal_english": "administrate",
@@ -15636,6 +16156,19 @@
     "verb_family": "-ir",
     "conjugations": null,
     "category": "Business",
+    "stage": 4
+  },
+  {
+    "spanish_word": "aprender",
+    "english_meaning": "to learn",
+    "formal_english": null,
+    "example_sentence": "He aprendido mucho = I've learned a lot",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
     "stage": 4
   },
   {
@@ -15678,6 +16211,45 @@
     "stage": 4
   },
   {
+    "spanish_word": "bailar",
+    "english_meaning": "to dance",
+    "formal_english": null,
+    "example_sentence": "Hemos bailado toda la noche = We danced all night",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
+    "spanish_word": "beber",
+    "english_meaning": "to drink",
+    "formal_english": null,
+    "example_sentence": "He bebido café = I've drunk coffee",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
+    "stage": 4
+  },
+  {
+    "spanish_word": "buscar",
+    "english_meaning": "to search",
+    "formal_english": null,
+    "example_sentence": "He buscado por todas partes = I've searched everywhere",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
     "spanish_word": "calcular",
     "english_meaning": "figure out / work out",
     "formal_english": "calculate",
@@ -15688,6 +16260,19 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Daily",
+    "stage": 4
+  },
+  {
+    "spanish_word": "cocinar",
+    "english_meaning": "to cook",
+    "formal_english": null,
+    "example_sentence": "Ha cocinado la cena = He's cooked dinner",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
     "stage": 4
   },
   {
@@ -15704,6 +16289,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "comer",
+    "english_meaning": "to eat",
+    "formal_english": null,
+    "example_sentence": "He comido tacos = I've eaten tacos",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
+    "stage": 4
+  },
+  {
     "spanish_word": "compensar",
     "english_meaning": "make up for / pay back",
     "formal_english": "compensate",
@@ -15714,6 +16312,19 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Business",
+    "stage": 4
+  },
+  {
+    "spanish_word": "comprar",
+    "english_meaning": "to buy",
+    "formal_english": null,
+    "example_sentence": "He comprado comida = I've bought food",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
     "stage": 4
   },
   {
@@ -15847,6 +16458,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "correr",
+    "english_meaning": "to run",
+    "formal_english": null,
+    "example_sentence": "He corrido 5km = I've run 5km",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
+    "stage": 4
+  },
+  {
     "spanish_word": "corresponder",
     "english_meaning": "match / belong to",
     "formal_english": "correspond",
@@ -15860,16 +16484,42 @@
     "stage": 4
   },
   {
-    "spanish_word": "decidir",
-    "english_meaning": "choose / pick",
-    "formal_english": "decide",
-    "example_sentence": "Decidí quedarme = I chose to stay",
+    "spanish_word": "cubrir",
+    "english_meaning": "to cover",
+    "formal_english": null,
+    "example_sentence": "He cubierto la mesa = I've covered the table",
     "emoji": null,
     "memory_hook": null,
     "pattern_id": null,
     "verb_family": "-ir",
     "conjugations": null,
-    "category": "Daily",
+    "category": "Past participle: irregular",
+    "stage": 4
+  },
+  {
+    "spanish_word": "decidir",
+    "english_meaning": "to decide",
+    "formal_english": null,
+    "example_sentence": "He decidido quedarme = I've decided to stay",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: regular -ir",
+    "stage": 4
+  },
+  {
+    "spanish_word": "decir",
+    "english_meaning": "to say",
+    "formal_english": null,
+    "example_sentence": "He dicho la verdad = I've told the truth",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -15900,15 +16550,15 @@
   },
   {
     "spanish_word": "descubrir",
-    "english_meaning": "find out",
-    "formal_english": "discover",
-    "example_sentence": "Descubrí la verdad = I found out the truth",
+    "english_meaning": "to discover",
+    "formal_english": null,
+    "example_sentence": "He descubierto algo = I've discovered something",
     "emoji": null,
     "memory_hook": null,
     "pattern_id": null,
     "verb_family": "-ir",
     "conjugations": null,
-    "category": "Daily",
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -15964,6 +16614,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "dormir",
+    "english_meaning": "to sleep",
+    "formal_english": null,
+    "example_sentence": "He dormido bien = I've slept well",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: regular -ir",
+    "stage": 4
+  },
+  {
     "spanish_word": "elaborar",
     "english_meaning": "make / prepare / develop",
     "formal_english": "elaborate",
@@ -16013,6 +16676,19 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Daily",
+    "stage": 4
+  },
+  {
+    "spanish_word": "escribir",
+    "english_meaning": "to write",
+    "formal_english": null,
+    "example_sentence": "He escrito una carta = I've written a letter",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -16130,6 +16806,32 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Tech",
+    "stage": 4
+  },
+  {
+    "spanish_word": "hablar",
+    "english_meaning": "to speak",
+    "formal_english": null,
+    "example_sentence": "He hablado con él = I've spoken with him",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
+    "spanish_word": "hacer",
+    "english_meaning": "to do",
+    "formal_english": null,
+    "example_sentence": "He hecho la tarea = I've done the homework",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -16367,6 +17069,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "morir",
+    "english_meaning": "to die",
+    "formal_english": null,
+    "example_sentence": "Ha muerto = He has died",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: irregular",
+    "stage": 4
+  },
+  {
     "spanish_word": "negociar",
     "english_meaning": "work out a deal",
     "formal_english": "negotiate",
@@ -16471,6 +17186,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "pagar",
+    "english_meaning": "to pay",
+    "formal_english": null,
+    "example_sentence": "He pagado la cuenta = I've paid the bill",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
     "spanish_word": "participar",
     "english_meaning": "take part / join in",
     "formal_english": "participate",
@@ -16510,6 +17238,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "perder",
+    "english_meaning": "to lose",
+    "formal_english": null,
+    "example_sentence": "He perdido las llaves = I've lost the keys",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
+    "stage": 4
+  },
+  {
     "spanish_word": "permitir",
     "english_meaning": "let / allow",
     "formal_english": "permit",
@@ -16533,6 +17274,19 @@
     "verb_family": "-ir",
     "conjugations": null,
     "category": "Daily",
+    "stage": 4
+  },
+  {
+    "spanish_word": "poner",
+    "english_meaning": "to put",
+    "formal_english": null,
+    "example_sentence": "He puesto la mesa = I've set the table",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -16666,6 +17420,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "recibir",
+    "english_meaning": "to receive",
+    "formal_english": null,
+    "example_sentence": "He recibido el pago = I've received the payment",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: regular -ir",
+    "stage": 4
+  },
+  {
     "spanish_word": "recomendar",
     "english_meaning": "suggest",
     "formal_english": "recommend",
@@ -16771,15 +17538,15 @@
   },
   {
     "spanish_word": "resolver",
-    "english_meaning": "fix / sort out",
-    "formal_english": "resolve",
-    "example_sentence": "Vamos a resolver esto = Let's sort this out",
+    "english_meaning": "to solve",
+    "formal_english": null,
+    "example_sentence": "He resuelto el problema = I've solved the problem",
     "emoji": null,
     "memory_hook": null,
     "pattern_id": null,
     "verb_family": "-er",
     "conjugations": null,
-    "category": "Daily",
+    "category": "Past participle: irregular",
     "stage": 4
   },
   {
@@ -16806,6 +17573,32 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Daily",
+    "stage": 4
+  },
+  {
+    "spanish_word": "romper",
+    "english_meaning": "to break",
+    "formal_english": null,
+    "example_sentence": "He roto el vaso = I've broken the glass",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: irregular",
+    "stage": 4
+  },
+  {
+    "spanish_word": "salir",
+    "english_meaning": "to leave",
+    "formal_english": null,
+    "example_sentence": "He salido temprano = I've left early",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: regular -ir",
     "stage": 4
   },
   {
@@ -16900,6 +17693,19 @@
     "stage": 4
   },
   {
+    "spanish_word": "trabajar",
+    "english_meaning": "to work",
+    "formal_english": null,
+    "example_sentence": "He trabajado mucho = I've worked a lot",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
     "spanish_word": "transformar",
     "english_meaning": "change / turn into",
     "formal_english": "transform",
@@ -16939,6 +17745,32 @@
     "stage": 4
   },
   {
+    "spanish_word": "vender",
+    "english_meaning": "to sell",
+    "formal_english": null,
+    "example_sentence": "He vendido mi carro = I've sold my car",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: regular -er",
+    "stage": 4
+  },
+  {
+    "spanish_word": "ver",
+    "english_meaning": "to see",
+    "formal_english": null,
+    "example_sentence": "He visto la película = I've seen the movie",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: irregular",
+    "stage": 4
+  },
+  {
     "spanish_word": "verificar",
     "english_meaning": "check",
     "formal_english": "verify",
@@ -16949,6 +17781,45 @@
     "verb_family": "-ar",
     "conjugations": null,
     "category": "Daily",
+    "stage": 4
+  },
+  {
+    "spanish_word": "viajar",
+    "english_meaning": "to travel",
+    "formal_english": null,
+    "example_sentence": "Hemos viajado a México = We've traveled to Mexico",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ar",
+    "conjugations": null,
+    "category": "Past participle: regular -ar",
+    "stage": 4
+  },
+  {
+    "spanish_word": "vivir",
+    "english_meaning": "to live",
+    "formal_english": null,
+    "example_sentence": "He vivido en Cancún = I've lived in Cancún",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-ir",
+    "conjugations": null,
+    "category": "Past participle: regular -ir",
+    "stage": 4
+  },
+  {
+    "spanish_word": "volver",
+    "english_meaning": "to return",
+    "formal_english": null,
+    "example_sentence": "He vuelto a casa = I've returned home",
+    "emoji": null,
+    "memory_hook": null,
+    "pattern_id": null,
+    "verb_family": "-er",
+    "conjugations": null,
+    "category": "Past participle: irregular",
     "stage": 4
   }
 ]

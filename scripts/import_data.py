@@ -130,6 +130,33 @@ def _split_alt_spelling(text: str) -> str:
     return text
 
 
+def _strip_parenthetical(text: str) -> str:
+    """
+    "pan (bread)" -> "pan". "taco" -> "taco".
+    Splits on the first "(" and trims; preserves the bare word as-is otherwise.
+    """
+    if "(" in text:
+        return text.split("(", 1)[0].strip()
+    return text.strip()
+
+
+def _split_infinitive_meaning(text: str) -> tuple[str, str | None]:
+    """
+    Parse a cell like "hablar (speak)" into ("hablar", "to speak").
+    No parenthetical -> (text, None). The english meaning is prefixed with
+    "to " so it reads as a canonical English infinitive.
+    """
+    text = text.strip()
+    if "(" in text and ")" in text:
+        head, _, rest = text.partition("(")
+        infinitive = head.strip()
+        meaning_inner = rest.split(")", 1)[0].strip()
+        if meaning_inner:
+            return infinitive, f"to {meaning_inner}"
+        return infinitive, None
+    return text, None
+
+
 # --------------------------------------------------------------------------- #
 # Emoji map — obvious matches only. "Good enough is fine."
 # Keys are lowercased, accent-stripped first form (before any "/").
@@ -682,7 +709,7 @@ def parse_formal_english(ws: Any) -> tuple[list[dict], dict, list[dict], list[st
         category = s(row[3])
         example = s(row[4])
 
-        stage2.append(make_word(
+        stage2_record = make_word(
             spanish_word=spanish,
             stage=2,
             english_meaning=english_meaning,
@@ -690,7 +717,12 @@ def parse_formal_english(ws: Any) -> tuple[list[dict], dict, list[dict], list[st
             category=category,
             example_sentence=example,
             emoji=emoji_for(spanish),
-        ))
+        )
+        # Transient tag — used by dedupe_words to detect NOUN/ADJ same-word
+        # collisions in this sheet and merge them. Stripped before JSON write.
+        if current_section:
+            stage2_record["_formal_section"] = current_section.upper()
+        stage2.append(stage2_record)
         parsed += 1
 
         if current_section and current_section.upper() == "VERBS":
@@ -1118,22 +1150,262 @@ def parse_cheat_sheets(ws: Any) -> tuple[list[dict], dict]:
 
 
 # --------------------------------------------------------------------------- #
+# Cheat-sheet-derived word records
+# --------------------------------------------------------------------------- #
+# The eria_suffix and past_participles cheat-sheet sections double as
+# swipeable card sources. Their raw rows come from the same parse pass that
+# emits cheat_sheets.json — we just walk the in-memory section content here
+# instead of re-reading the workbook.
+# --------------------------------------------------------------------------- #
+
+
+def parse_eria_words(eria_section: dict) -> tuple[list[dict], dict]:
+    """
+    Build Stage-1 word records from the eria_suffix cheat-sheet section.
+
+    Per row, emit two cards:
+      - derived (e.g. "panadería") with hook "pan (bread) + -ería = panadería"
+      - base    (e.g. "pan")        with no hook, category "-ería base"
+
+    Both inherit emoji_for() lookup. Records returned in a single flat list
+    (interleaved derived, base, derived, base, ...). The caller appends them
+    to all_words AFTER all other Stage-1 sources so dedupe favours any earlier
+    sheet's better hook for shared base words like pan / libro / zapato.
+    """
+    name = "eria_suffix (words)"
+    out: list[dict] = []
+    parsed = skipped = 0
+    skip_reasons: dict[str, int] = {}
+
+    content = json.loads(eria_section["content_json"])
+    rows = content.get("rows") or []
+
+    for row in rows:
+        if len(row) < 4 or not row[0] or not row[2]:
+            skipped += 1
+            skip_reasons["incomplete"] = skip_reasons.get("incomplete", 0) + 1
+            continue
+        base_raw = str(row[0])
+        base_meaning = str(row[1]) if row[1] else None
+        derived_raw = str(row[2])
+        derived_meaning = str(row[3]) if row[3] else None
+
+        # Strip parenthetical from base ("pan (bread)" -> "pan").
+        base = _strip_parenthetical(base_raw)
+        # Defensive alt-spelling split (mirror confusing pairs handling).
+        base = _split_alt_spelling(base)
+        derived = _split_alt_spelling(derived_raw)
+
+        if not base or not derived:
+            skipped += 1
+            skip_reasons["empty_after_strip"] = skip_reasons.get("empty_after_strip", 0) + 1
+            continue
+
+        # Derived card: the new word being learned.
+        # Build the hook with the original cleaned base + col1 meaning.
+        if base_meaning:
+            hook = f"{base} ({base_meaning}) + -ería = {derived}"
+        else:
+            hook = f"{base} + -ería = {derived}"
+        out.append(make_word(
+            spanish_word=derived,
+            stage=1,
+            english_meaning=derived_meaning,
+            memory_hook=hook,
+            category="-ería suffix",
+            emoji=emoji_for(derived),
+        ))
+        # Base card: just the bare word + meaning. No invented hook.
+        out.append(make_word(
+            spanish_word=base,
+            stage=1,
+            english_meaning=base_meaning,
+            memory_hook=None,
+            category="-ería base",
+            emoji=emoji_for(base),
+        ))
+        parsed += 2
+
+    print(f"[derived] {name}: emitted {len(out)} records ({parsed // 2} pairs)", flush=True)
+    return out, {"parsed": parsed, "skipped": skipped, "skip_reasons": skip_reasons, "emitted": len(out)}
+
+
+def parse_past_participle_words(pp_section: dict) -> tuple[list[dict], dict, list[str]]:
+    """
+    Build Stage-4 verb records from the past_participles cheat-sheet section.
+
+    Tracks the current sub-group as we walk rows:
+      - col 0 == "-ar verbs"  -> "regular -ar"
+      - col 0 == "-er verbs"  -> "regular -er"
+      - col 0 == "-ir verbs"  -> "regular -ir"
+      - col 1 == "no pattern" -> "irregular"  (one-time switch on hacer row)
+
+    The IRREGULAR sub-header row was already extracted to sub_headers by the
+    cheat-sheets parser and its col 0 nulled out, so we cannot detect it from
+    col 0 alone. The "no pattern" rule label in col 1 (set only on the first
+    irregular row by the spreadsheet) is what drives the switch.
+
+    Per row, emit one Stage-4 word:
+      - spanish_word, english_meaning <- _split_infinitive_meaning(col 2)
+      - example_sentence              <- col 4
+      - verb_family                   <- "-ar"/"-er"/"-ir" from infinitive ending
+      - category                      <- "Past participle: <sub_group>"
+      - emoji                         <- emoji_for(spanish_word)
+
+    Returns (records, stats, warnings).
+    """
+    name = "past_participles (words)"
+    out: list[dict] = []
+    warnings: list[str] = []
+    parsed = skipped = 0
+    skip_reasons: dict[str, int] = {}
+
+    content = json.loads(pp_section["content_json"])
+    rows = content.get("rows") or []
+
+    sub_group: str | None = None
+
+    for idx, row in enumerate(rows):
+        col0 = str(row[0]) if len(row) > 0 and row[0] else None
+        col1 = str(row[1]) if len(row) > 1 and row[1] else None
+        col2 = str(row[2]) if len(row) > 2 and row[2] else None
+        col4 = str(row[4]) if len(row) > 4 and row[4] else None
+
+        # Sub-group transitions.
+        if col0:
+            low = col0.strip().lower()
+            if low.startswith("-ar"):
+                sub_group = "regular -ar"
+            elif low.startswith("-er"):
+                sub_group = "regular -er"
+            elif low.startswith("-ir"):
+                sub_group = "regular -ir"
+        if col1 and col1.strip().lower() == "no pattern":
+            sub_group = "irregular"
+
+        if not col2:
+            skipped += 1
+            skip_reasons["no_infinitive"] = skip_reasons.get("no_infinitive", 0) + 1
+            continue
+        if sub_group is None:
+            warnings.append(f"past_participles row {idx}: no sub_group set yet for {col2!r}")
+            skipped += 1
+            skip_reasons["no_sub_group"] = skip_reasons.get("no_sub_group", 0) + 1
+            continue
+
+        spanish, english = _split_infinitive_meaning(col2)
+        if not spanish:
+            skipped += 1
+            skip_reasons["empty_after_split"] = skip_reasons.get("empty_after_split", 0) + 1
+            continue
+
+        # verb_family: derive from accent-stripped lowercase last 2 chars.
+        tail = strip_accents(spanish[-2:].lower()) if len(spanish) >= 2 else ""
+        if tail in ("ar", "er", "ir"):
+            verb_family = f"-{tail}"
+        else:
+            verb_family = None
+            warnings.append(f"past_participles {spanish!r} does not end in -ar/-er/-ir")
+
+        out.append(make_word(
+            spanish_word=spanish,
+            stage=4,
+            english_meaning=english,
+            example_sentence=col4,
+            verb_family=verb_family,
+            category=f"Past participle: {sub_group}",
+            emoji=emoji_for(spanish),
+        ))
+        parsed += 1
+
+    print(f"[derived] {name}: emitted {len(out)} records", flush=True)
+    return (
+        out,
+        {"parsed": parsed, "skipped": skipped, "skip_reasons": skip_reasons, "emitted": len(out)},
+        warnings,
+    )
+
+
+# --------------------------------------------------------------------------- #
 # Driver
 # --------------------------------------------------------------------------- #
 
-def dedupe_words(words: list[dict]) -> tuple[list[dict], int]:
-    """Drop duplicates on (spanish_word, stage). Keep first occurrence."""
-    seen: set[tuple[str, int]] = set()
+def _is_formal_english_section_collision(a: dict, b: dict) -> bool:
+    """
+    True iff both records originate from the Formal English sheet (have a
+    transient _formal_section tag) and one is from NOUNS, the other from
+    ADJECTIVES. Used by dedupe_words to merge instead of drop.
+    """
+    sec_a = a.get("_formal_section")
+    sec_b = b.get("_formal_section")
+    if not sec_a or not sec_b:
+        return False
+    return {sec_a, sec_b} == {"NOUNS", "ADJECTIVES"}
+
+
+def _merge_noun_adj(first: dict, second: dict) -> dict:
+    """
+    Merge a NOUN/ADJ pair from Formal English into a single record.
+    Keeps first occurrence's category, example_sentence, and other fields;
+    only english_meaning is rewritten as "<noun> (n.) / <adj> (adj.)".
+    """
+    sec_first = first.get("_formal_section")
+    if sec_first == "NOUNS":
+        noun_meaning = first.get("english_meaning") or ""
+        adj_meaning = second.get("english_meaning") or ""
+    else:
+        noun_meaning = second.get("english_meaning") or ""
+        adj_meaning = first.get("english_meaning") or ""
+    merged = dict(first)
+    merged["english_meaning"] = f"{noun_meaning} (n.) / {adj_meaning} (adj.)"
+    return merged
+
+
+def dedupe_words(
+    words: list[dict],
+) -> tuple[list[dict], int, list[tuple[dict, dict]], list[tuple[str, str]]]:
+    """
+    Collapse duplicates on (spanish_word, stage).
+
+    Behaviour:
+      - For Formal English NOUN/ADJ collisions on the same Stage 2 word
+        (e.g. exterior, inferior, superior), MERGE the two records:
+        rewrite english_meaning to "<noun> (n.) / <adj> (adj.)"; keep all
+        other fields from the first occurrence.
+      - For all other collisions, drop the second occurrence (first wins).
+
+    Returns (deduped_words, dropped_count, merged_pairs, shadow_logs).
+      - merged_pairs:  [(kept_first, dropped_second), ...] for merge cases.
+      - shadow_logs:   [(kept_category, dropped_category), ...] noting which
+        records masked which — surfaces e.g. past-participle Stage 4 entries
+        shadowing Formal English Stage 4 verb cognates (and vice versa).
+    """
+    seen: dict[tuple[str, int], int] = {}  # key -> index in `out`
     out: list[dict] = []
     dropped = 0
+    merged_pairs: list[tuple[dict, dict]] = []
+    shadow_logs: list[tuple[str, str]] = []
+
     for w in words:
         key = (w["spanish_word"], w["stage"])
         if key in seen:
+            existing = out[seen[key]]
+            if _is_formal_english_section_collision(existing, w):
+                merged = _merge_noun_adj(existing, w)
+                out[seen[key]] = merged
+                merged_pairs.append((existing, w))
+                # Merge consumes the second record without counting as a drop.
+                continue
             dropped += 1
+            shadow_logs.append((
+                f"{existing.get('category')} (stage {existing['stage']}, {existing['spanish_word']})",
+                f"{w.get('category')} (stage {w['stage']}, {w['spanish_word']})",
+            ))
             continue
-        seen.add(key)
+        seen[key] = len(out)
         out.append(w)
-    return out, dropped
+
+    return out, dropped, merged_pairs, shadow_logs
 
 
 def dedupe_patterns(patterns: list[dict]) -> tuple[list[dict], int]:
@@ -1191,6 +1463,45 @@ def main() -> int:
     stats: dict[str, dict] = {}
     warnings: list[str] = []
 
+    # ----- Cheat-sheets parsed UP FRONT -------------------------------------
+    # We need eria_suffix and past_participles available so we can splice
+    # their derived word records into all_words at the right pipeline stages
+    # (eria after CONFUSING PAIRS, past-participles before Formal English
+    # Stage-4 dual-writes). The parsed sections also feed cheat_sheets.json
+    # verbatim; the structure of that file is unaffected by this reuse.
+    patterns_out, p_st = parse_pattern_cheat_sheet(wb["Pattern Cheat Sheet"])
+    stats["Pattern Cheat Sheet"] = p_st
+
+    cheat_sheets_out, cs_st = parse_cheat_sheets(wb["Pattern Cheat Sheet"])
+    stats["Pattern Cheat Sheet (cheat_sheets)"] = cs_st
+    if len(cheat_sheets_out) != len(CHEAT_SHEET_SLUGS):
+        print(
+            f"ERROR: cheat_sheets emitted {len(cheat_sheets_out)} records, "
+            f"expected {len(CHEAT_SHEET_SLUGS)}. Refusing to write incomplete cheat_sheets.json. "
+            f"Check the Pattern Cheat Sheet sheet — section titles or ordering may have changed.",
+            file=sys.stderr,
+        )
+        return 4
+
+    # Index sections by slug for lookup.
+    sections_by_slug = {sec["section"]: sec for sec in cheat_sheets_out}
+    if "eria_suffix" not in sections_by_slug or "past_participles" not in sections_by_slug:
+        print(
+            "ERROR: expected eria_suffix and past_participles cheat-sheet sections — "
+            f"got {sorted(sections_by_slug.keys())}.",
+            file=sys.stderr,
+        )
+        return 5
+
+    # Build derived word records from those sections. We DO NOT extend
+    # all_words yet — we splice them in at the right pipeline points below.
+    eria_words, eria_st = parse_eria_words(sections_by_slug["eria_suffix"])
+    stats["eria_suffix (derived words)"] = eria_st
+    pp_words, pp_st, pp_warns = parse_past_participle_words(sections_by_slug["past_participles"])
+    stats["past_participles (derived words)"] = pp_st
+    warnings.extend(pp_warns)
+
+    # ----- Stage 1 sources --------------------------------------------------
     out, st = parse_easy_associations(wb["Easy Associations"])
     all_words.extend(out)
     stats["Easy Associations"] = st
@@ -1207,8 +1518,20 @@ def main() -> int:
     all_words.extend(out)
     stats["Spanish for Spanish"] = st
 
+    # eria-derived Stage 1 cards come AFTER everything else in Stage 1
+    # (incl. CONFUSING PAIRS) so dedupe lets earlier sheets' better hooks
+    # win for shared base words like pan / libro / zapato.
+    all_words.extend(eria_words)
+
+    # ----- Stage 2 + 4 (Formal English) + Past Participles ------------------
     s2, st2, s4, warns = parse_formal_english(wb["Formal English = Spanish"])
     all_words.extend(s2)
+    # Past participles are Stage 4. Append BEFORE the Formal-English Stage-4
+    # dual-writes so dedupe keeps the past-participle examples (canonical
+    # common verbs like hablar/comer/vivir/hacer) over any Formal-English
+    # cognate verb that overlaps. Any shadowed Formal-English verb is logged
+    # via shadow_logs below.
+    all_words.extend(pp_words)
     all_words.extend(s4)
     stats["Formal English = Spanish"] = st2
     stats["Formal English = Spanish (verbs -> stage 4)"] = {
@@ -1216,31 +1539,24 @@ def main() -> int:
     }
     warnings.extend(warns)
 
+    # ----- Stage 3 ----------------------------------------------------------
     out, st = parse_cognates_by_pattern(wb["Cognates by Pattern"])
     all_words.extend(out)
     stats["Cognates by Pattern"] = st
 
-    patterns_out, p_st = parse_pattern_cheat_sheet(wb["Pattern Cheat Sheet"])
-    stats["Pattern Cheat Sheet"] = p_st
-
-    cheat_sheets_out, cs_st = parse_cheat_sheets(wb["Pattern Cheat Sheet"])
-    stats["Pattern Cheat Sheet (cheat_sheets)"] = cs_st
-    if len(cheat_sheets_out) != len(CHEAT_SHEET_SLUGS):
-        print(
-            f"ERROR: cheat_sheets emitted {len(cheat_sheets_out)} records, "
-            f"expected {len(CHEAT_SHEET_SLUGS)}. Refusing to write incomplete cheat_sheets.json. "
-            f"Check the Pattern Cheat Sheet sheet — section titles or ordering may have changed.",
-            file=sys.stderr,
-        )
-        return 4
-
+    # ----- Reference tables -------------------------------------------------
     ff_out, ff_st = parse_false_friends(wb["False Friends (Watch Out)"])
     stats["False Friends (Watch Out)"] = ff_st
 
     # Deduplicate on UNIQUE keys the runtime seeder enforces.
-    all_words, dropped_words = dedupe_words(all_words)
+    all_words, dropped_words, merged_pairs, shadow_logs = dedupe_words(all_words)
     patterns_out, dropped_patterns = dedupe_patterns(patterns_out)
     ff_out, dropped_ff = dedupe_false_friends(ff_out)
+
+    # Strip transient _formal_section tags before writing JSON. They are
+    # only used internally to drive the NOUN/ADJ merge in dedupe_words.
+    for w in all_words:
+        w.pop("_formal_section", None)
 
     # Stable sort for reviewable diffs.
     all_words.sort(key=lambda w: (w["stage"], w["spanish_word"]))
@@ -1284,6 +1600,22 @@ def main() -> int:
     print(f"  false_friends.json: {len(ff_out)} records  (dropped dup: {dropped_ff})", flush=True)
     print(f"  cheat_sheets.json:  {len(cheat_sheets_out)} records", flush=True)
     print(f"  words missing emoji: {len(missing_emoji)} / {len(all_words)}", flush=True)
+
+    if merged_pairs:
+        print("=== Merged NOUN/ADJ records ===", flush=True)
+        for first, second in merged_pairs:
+            print(
+                f"  - {first['spanish_word']} (stage {first['stage']}): "
+                f"{first.get('_formal_section')} {first.get('english_meaning')!r} + "
+                f"{second.get('_formal_section')} {second.get('english_meaning')!r}",
+                flush=True,
+            )
+
+    if shadow_logs:
+        print("=== Dedupe drops (kept <- dropped) ===", flush=True)
+        for kept, dropped in shadow_logs:
+            print(f"  - kept: {kept}  |  dropped: {dropped}", flush=True)
+
     if warnings:
         print("=== Warnings ===", flush=True)
         for w in warnings:
