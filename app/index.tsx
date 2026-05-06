@@ -1,73 +1,112 @@
+import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { CardSwiper } from '../components/CardSwiper';
-import { getWordsByStage, initDB } from '../db/client';
-import type { Word } from '../db/schema';
-import { useProgress } from '../state/progress';
+import { useMemo } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import wordsData from '../data/words.json';
+import { selectSeenCount, useProgress } from '../state/progress';
 import { theme } from '../theme';
 
-export default function Home() {
-  const [words, setWords] = useState<Word[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const markSeen = useProgress((s) => s.markSeen);
+type StageTile = {
+  stage: number;
+  title: string;
+  subtitle: string;
+  accent: string;
+  route: '/stage1' | '/stage2' | null;
+};
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        await initDB();
-        const stage1 = await getWordsByStage(1);
-        if (!cancelled) setWords(stage1);
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'Failed to load words');
-        }
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
+export default function Home() {
+  const router = useRouter();
+  const seenCount = useProgress(selectSeenCount);
+
+  const { totalWords, stageCounts } = useMemo(() => {
+    const counts: Record<number, number> = {};
+    for (const w of wordsData) counts[w.stage] = (counts[w.stage] ?? 0) + 1;
+    return { totalWords: wordsData.length, stageCounts: counts };
   }, []);
 
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
-      </View>
-    );
-  }
-
-  if (!words) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator color={theme.colors.primary} />
-      </View>
-    );
-  }
+  const tiles: StageTile[] = [
+    {
+      stage: 1,
+      title: 'Easy Words',
+      subtitle: `${stageCounts[1] ?? 0} cognates you already know`,
+      accent: theme.colors.stage1,
+      route: '/stage1',
+    },
+    {
+      stage: 2,
+      title: 'Formal English',
+      subtitle: `${stageCounts[2] ?? 0} fancy words`,
+      accent: theme.colors.stage2,
+      route: '/stage2',
+    },
+    {
+      stage: 3,
+      title: 'Patterns',
+      subtitle: `${stageCounts[3] ?? 0} words across 22 rules`,
+      accent: theme.colors.stage3,
+      route: null,
+    },
+    {
+      stage: 4,
+      title: 'Verbs',
+      subtitle: `${stageCounts[4] ?? 0} verbs`,
+      accent: theme.colors.stage4,
+      route: null,
+    },
+    {
+      stage: 5,
+      title: 'Coming Soon',
+      subtitle: '',
+      accent: theme.colors.stage5,
+      route: null,
+    },
+  ];
 
   return (
     <View style={styles.root}>
-      <CardSwiper
-        data={words}
-        renderCard={(word) => (
-          <View style={styles.card}>
-            {word.emoji ? (
-              <Text style={styles.emoji}>{word.emoji}</Text>
-            ) : null}
-            <Text style={[styles.word, !word.emoji && styles.wordNoEmoji]}>
-              {word.spanish_word}
-            </Text>
-            {word.memory_hook ? (
-              <Text style={styles.hook}>{word.memory_hook}</Text>
-            ) : null}
-          </View>
-        )}
-        onCardChange={(index) => {
-          const w = words[index];
-          if (w) markSeen(w.id);
-        }}
-      />
+      <View style={styles.header}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.title}>Sticky Lingo</Text>
+          <Text style={styles.tagline}>
+            You already know more Spanish than you think
+          </Text>
+        </View>
+        <View style={styles.counter}>
+          <Text style={styles.counterValue}>{seenCount}</Text>
+          <Text style={styles.counterTotal}>/ {totalWords}</Text>
+        </View>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.tilesContent}>
+        {tiles.map((t) => {
+          const disabled = t.route === null;
+          const route = t.route;
+          return (
+            <Pressable
+              key={t.stage}
+              disabled={disabled}
+              onPress={() => {
+                if (route) router.push(route);
+              }}
+              style={({ pressed }) => [
+                styles.tile,
+                { backgroundColor: t.accent },
+                pressed && !disabled && styles.tilePressed,
+                disabled && styles.tileDisabled,
+              ]}
+            >
+              <View style={styles.tileTextWrap}>
+                <Text style={styles.tileStage}>STAGE {t.stage}</Text>
+                <Text style={styles.tileTitle}>{t.title}</Text>
+                {t.subtitle ? (
+                  <Text style={styles.tileSubtitle}>{t.subtitle}</Text>
+                ) : null}
+              </View>
+              {!disabled ? <Text style={styles.tileArrow}>→</Text> : null}
+            </Pressable>
+          );
+        })}
+      </ScrollView>
       <StatusBar style="auto" />
     </View>
   );
@@ -78,48 +117,82 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.background,
   },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: theme.colors.background,
-  },
-  errorText: {
-    fontFamily: theme.typography.fontFamily.semibold,
-    fontSize: theme.typography.size.base,
-    color: theme.colors.error,
+  header: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingTop: theme.spacing.xxl,
     paddingHorizontal: theme.spacing.lg,
-    textAlign: 'center',
+    paddingBottom: theme.spacing.lg,
   },
-  card: {
-    width: '100%',
-    aspectRatio: 0.7,
-    backgroundColor: theme.colors.surfaceElevated,
-    borderRadius: theme.radius.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing.xl,
-    ...theme.shadow.cardElevated,
-  },
-  emoji: {
-    fontSize: theme.typography.size.display * 1.5,
-    marginBottom: theme.spacing.lg,
-  },
-  word: {
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: theme.typography.size.display,
+  title: {
+    fontFamily: theme.typography.fontFamily.extrabold,
+    fontSize: theme.typography.size.xxl,
     color: theme.colors.textPrimary,
-    textAlign: 'center',
   },
-  wordNoEmoji: {
-    fontSize: theme.typography.size.display * 1.1,
-  },
-  hook: {
+  tagline: {
     fontFamily: theme.typography.fontFamily.regular,
-    fontSize: theme.typography.size.md,
+    fontSize: theme.typography.size.sm,
     color: theme.colors.textSecondary,
-    textAlign: 'center',
-    marginTop: theme.spacing.lg,
-    lineHeight: theme.typography.size.md * theme.typography.lineHeight.normal,
+    marginTop: theme.spacing.xs,
+  },
+  counter: {
+    alignItems: 'flex-end',
+    paddingTop: theme.spacing.xs,
+  },
+  counterValue: {
+    fontFamily: theme.typography.fontFamily.extrabold,
+    fontSize: theme.typography.size.xl,
+    color: theme.colors.primary,
+  },
+  counterTotal: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.size.xs,
+    color: theme.colors.textTertiary,
+  },
+  tilesContent: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingBottom: theme.spacing.xl,
+  },
+  tile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.lg,
+    borderRadius: theme.radius.lg,
+    marginBottom: theme.spacing.md,
+    ...theme.shadow.card,
+  },
+  tilePressed: {
+    opacity: 0.85,
+  },
+  tileDisabled: {
+    opacity: 0.6,
+  },
+  tileTextWrap: {
+    flex: 1,
+  },
+  tileStage: {
+    fontFamily: theme.typography.fontFamily.semibold,
+    fontSize: theme.typography.size.xs,
+    color: theme.colors.textTertiary,
+    letterSpacing: 1,
+  },
+  tileTitle: {
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.size.lg,
+    color: theme.colors.textPrimary,
+    marginTop: theme.spacing.xs,
+  },
+  tileSubtitle: {
+    fontFamily: theme.typography.fontFamily.regular,
+    fontSize: theme.typography.size.sm,
+    color: theme.colors.textSecondary,
+    marginTop: theme.spacing.xs,
+  },
+  tileArrow: {
+    fontFamily: theme.typography.fontFamily.bold,
+    fontSize: theme.typography.size.lg,
+    color: theme.colors.textPrimary,
+    marginLeft: theme.spacing.md,
   },
 });
