@@ -8,6 +8,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardSwiper } from '../components/CardSwiper';
 import { getWordsByStage, initDB } from '../db/client';
 import type { Word } from '../db/schema';
@@ -73,12 +74,14 @@ export default function Stage2() {
 
   if (!category) {
     return (
-      <View style={styles.root}>
+      <SafeAreaView style={styles.root} edges={['top']}>
         <ScrollView contentContainerStyle={styles.pickerContent}>
           <Text style={styles.pickerTitle}>Pick a category</Text>
           {categories.map((c) => (
             <Pressable
               key={c.name}
+              accessibilityRole="button"
+              accessibilityLabel={`${c.name}, ${c.count} words`}
               style={({ pressed }) => [
                 styles.categoryRow,
                 pressed && styles.categoryRowPressed,
@@ -91,13 +94,19 @@ export default function Stage2() {
           ))}
         </ScrollView>
         <StatusBar style="auto" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.root}>
-      <Pressable style={styles.backButton} onPress={() => setCategory(null)}>
+    <SafeAreaView style={styles.root} edges={['top']}>
+      <Pressable
+        style={styles.backButton}
+        onPress={() => setCategory(null)}
+        accessibilityRole="button"
+        accessibilityLabel="Back to categories"
+        hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+      >
         <Text style={styles.backText}>← Categories</Text>
       </Pressable>
       <CardSwiper
@@ -110,7 +119,7 @@ export default function Stage2() {
         }}
       />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -122,27 +131,43 @@ function FlipCard({ word }: { word: Word }) {
       style={styles.card}
       onPress={() => setFlipped((f) => !f)}
       disabled={!hasExample}
+      accessibilityRole={hasExample ? 'button' : undefined}
+      accessibilityLabel={
+        flipped && hasExample
+          ? `Example: ${word.example_sentence}. Tap to flip back.`
+          : [
+              word.spanish_word,
+              word.formal_english,
+              word.english_meaning,
+              hasExample ? 'Tap for example' : null,
+            ]
+              .filter(Boolean)
+              .join('. ')
+      }
     >
-      {flipped && hasExample ? (
-        <>
-          <Text style={styles.backLabel}>Example</Text>
-          <Text style={styles.example}>{word.example_sentence}</Text>
-          <Text style={styles.tapHint}>tap to flip back</Text>
-        </>
-      ) : (
-        <>
-          <Text style={styles.word}>{word.spanish_word}</Text>
-          {word.formal_english ? (
-            <Text style={styles.formal}>{word.formal_english}</Text>
-          ) : null}
-          {word.english_meaning ? (
-            <Text style={styles.meaning}>{word.english_meaning}</Text>
-          ) : null}
-          {hasExample ? (
-            <Text style={styles.tapHint}>tap for example</Text>
-          ) : null}
-        </>
-      )}
+      <View style={styles.cardContent}>
+        {flipped && hasExample ? (
+          <>
+            <Text style={styles.backLabel}>Example</Text>
+            <Text style={styles.example}>{word.example_sentence}</Text>
+          </>
+        ) : (
+          <>
+            <Text style={styles.word}>{word.spanish_word}</Text>
+            {word.formal_english ? (
+              <Text style={styles.formal}>{word.formal_english}</Text>
+            ) : null}
+            {word.english_meaning ? (
+              <Text style={styles.meaning}>{word.english_meaning}</Text>
+            ) : null}
+          </>
+        )}
+      </View>
+      {hasExample ? (
+        <Text style={styles.tapHint}>
+          {flipped ? 'tap to flip back' : 'tap for example'}
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -166,7 +191,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   pickerContent: {
-    paddingTop: theme.spacing.xxl,
+    paddingTop: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
     paddingBottom: theme.spacing.xl,
   },
@@ -202,7 +227,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: theme.spacing.xl,
+    top: theme.spacing.sm,
     left: theme.spacing.lg,
     zIndex: 10,
     paddingVertical: theme.spacing.xs,
@@ -218,10 +243,13 @@ const styles = StyleSheet.create({
     aspectRatio: 0.7,
     backgroundColor: theme.colors.surfaceElevated,
     borderRadius: theme.radius.xl,
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: theme.spacing.xl,
     ...theme.shadow.cardElevated,
+  },
+  cardContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   word: {
     fontFamily: theme.typography.fontFamily.bold,
@@ -262,8 +290,8 @@ const styles = StyleSheet.create({
       theme.typography.size.lg * theme.typography.lineHeight.normal,
   },
   tapHint: {
-    position: 'absolute',
-    bottom: theme.spacing.lg,
+    alignSelf: 'center',
+    marginTop: theme.spacing.md,
     fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.size.xs,
     color: theme.colors.textTertiary,

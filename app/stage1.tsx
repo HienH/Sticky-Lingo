@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardSwiper } from '../components/CardSwiper';
 import { getWordsByStage, initDB } from '../db/client';
 import type { Word } from '../db/schema';
@@ -47,7 +48,7 @@ export default function Stage1() {
   }
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root} edges={['top']}>
       <CardSwiper
         data={words}
         renderCard={(word) => (
@@ -69,7 +70,7 @@ export default function Stage1() {
         }}
       />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 

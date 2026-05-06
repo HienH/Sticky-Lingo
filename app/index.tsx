@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import wordsData from '../data/words.json';
 import { selectSeenCount, useProgress } from '../state/progress';
 import { theme } from '../theme';
@@ -63,15 +64,24 @@ export default function Home() {
   ];
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root} edges={['top']}>
       <View style={styles.header}>
         <View style={{ flex: 1 }}>
-          <Text style={styles.title}>Sticky Lingo</Text>
+          <Text
+            style={styles.title}
+            accessibilityRole="header"
+          >
+            Sticky Lingo
+          </Text>
           <Text style={styles.tagline}>
             You already know more Spanish than you think
           </Text>
         </View>
-        <View style={styles.counter}>
+        <View
+          style={styles.counter}
+          accessible
+          accessibilityLabel={`${seenCount} of ${totalWords} words seen`}
+        >
           <Text style={styles.counterValue}>{seenCount}</Text>
           <Text style={styles.counterTotal}>/ {totalWords}</Text>
         </View>
@@ -88,6 +98,13 @@ export default function Home() {
               onPress={() => {
                 if (route) router.push(route);
               }}
+              accessibilityRole="button"
+              accessibilityLabel={
+                disabled
+                  ? `Stage ${t.stage}: ${t.title} (coming soon)`
+                  : `Stage ${t.stage}: ${t.title}. ${t.subtitle}`
+              }
+              accessibilityState={{ disabled }}
               style={({ pressed }) => [
                 styles.tile,
                 { backgroundColor: t.accent },
@@ -108,7 +125,7 @@ export default function Home() {
         })}
       </ScrollView>
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -120,7 +137,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    paddingTop: theme.spacing.xxl,
+    paddingTop: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
     paddingBottom: theme.spacing.lg,
   },

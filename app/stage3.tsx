@@ -11,6 +11,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardSwiper } from '../components/CardSwiper';
 import { getWordsByStage, initDB } from '../db/client';
 import type { Word } from '../db/schema';
@@ -91,12 +92,14 @@ export default function Stage3() {
 
   if (!pattern) {
     return (
-      <View style={styles.root}>
+      <SafeAreaView style={styles.root} edges={['top']}>
         <ScrollView contentContainerStyle={styles.pickerContent}>
           <Text style={styles.pickerTitle}>Pick a pattern</Text>
           {patterns.map((p) => (
             <Pressable
               key={p.name}
+              accessibilityRole="button"
+              accessibilityLabel={`${p.name}, ${p.count} words`}
               style={({ pressed }) => [
                 styles.patternRow,
                 pressed && styles.patternRowPressed,
@@ -109,37 +112,45 @@ export default function Stage3() {
           ))}
         </ScrollView>
         <StatusBar style="auto" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <Pressable style={styles.backButton} onPress={() => setPattern(null)}>
-        <Text style={styles.backText}>← Patterns</Text>
-      </Pressable>
-      <CardSwiper
-        key={pattern}
-        data={deck}
-        renderCard={(item) =>
-          item.kind === 'word' ? (
-            <WordCard word={item.word} pattern={pattern} />
-          ) : (
-            <QuizCard word={item.word} pattern={pattern} />
-          )
-        }
-        onCardChange={(index) => {
-          const item = deck[index];
-          if (item && item.kind === 'word') {
-            markSeen(item.word.stage, item.word.spanish_word);
+    <SafeAreaView style={styles.root} edges={['top']}>
+      <KeyboardAvoidingView
+        style={styles.root}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <Pressable
+          style={styles.backButton}
+          onPress={() => setPattern(null)}
+          accessibilityRole="button"
+          accessibilityLabel="Back to patterns"
+          hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+        >
+          <Text style={styles.backText}>← Patterns</Text>
+        </Pressable>
+        <CardSwiper
+          key={pattern}
+          data={deck}
+          renderCard={(item) =>
+            item.kind === 'word' ? (
+              <WordCard word={item.word} pattern={pattern} />
+            ) : (
+              <QuizCard word={item.word} pattern={pattern} />
+            )
           }
-        }}
-      />
-      <StatusBar style="auto" />
-    </KeyboardAvoidingView>
+          onCardChange={(index) => {
+            const item = deck[index];
+            if (item && item.kind === 'word') {
+              markSeen(item.word.stage, item.word.spanish_word);
+            }
+          }}
+        />
+        <StatusBar style="auto" />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -196,6 +207,9 @@ function QuizCard({ word, pattern }: { word: Word; pattern: string }) {
           />
           <View style={styles.quizButtons}>
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Skip this quiz"
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               style={({ pressed }) => [
                 styles.skipButton,
                 pressed && styles.buttonPressed,
@@ -205,6 +219,10 @@ function QuizCard({ word, pattern }: { word: Word; pattern: string }) {
               <Text style={styles.skipText}>Skip</Text>
             </Pressable>
             <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Submit answer"
+              accessibilityState={{ disabled: !state.value.trim() }}
+              hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
               style={({ pressed }) => [
                 styles.submitButton,
                 !state.value.trim() && styles.submitButtonDisabled,
@@ -262,7 +280,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   pickerContent: {
-    paddingTop: theme.spacing.xxl,
+    paddingTop: theme.spacing.lg,
     paddingHorizontal: theme.spacing.lg,
     paddingBottom: theme.spacing.xl,
   },
@@ -300,7 +318,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: theme.spacing.xl,
+    top: theme.spacing.sm,
     left: theme.spacing.lg,
     zIndex: 10,
     paddingVertical: theme.spacing.xs,

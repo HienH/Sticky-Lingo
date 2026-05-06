@@ -1,4 +1,11 @@
-import { ReactNode, useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -31,6 +38,22 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
   useEffect(() => {
     lastIndexSV.value = data.length - 1;
   }, [data.length, lastIndexSV]);
+
+  // Fire onCardChange(0) the first time data is non-empty so the consumer
+  // (e.g. progress store) sees the initial card. Without this, the first
+  // card of every deck is never marked seen — onCardChange otherwise only
+  // fires from a swipe. Per-deck remount via key={...} re-runs this effect.
+  const onCardChangeRef = useRef(onCardChange);
+  useEffect(() => {
+    onCardChangeRef.current = onCardChange;
+  });
+  const firstFiredRef = useRef(false);
+  useEffect(() => {
+    if (firstFiredRef.current) return;
+    if (data.length === 0) return;
+    firstFiredRef.current = true;
+    onCardChangeRef.current?.(0);
+  }, [data.length]);
 
   // Hold the outgoing card off-screen until React commits the new index,
   // then snap to 0 so the new card appears at center. Avoids a one-frame
@@ -124,7 +147,7 @@ const styles = StyleSheet.create({
   },
   counter: {
     position: 'absolute',
-    top: theme.spacing.xl,
+    top: theme.spacing.sm,
     right: theme.spacing.lg,
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.xs,
