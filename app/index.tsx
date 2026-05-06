@@ -11,7 +11,7 @@ type StageTile = {
   title: string;
   subtitle: string;
   accent: string;
-  route: '/stage1' | '/stage2' | null;
+  route: '/stage1' | '/stage2' | '/stage3' | null;
 };
 
 export default function Home() {
@@ -44,7 +44,7 @@ export default function Home() {
       title: 'Patterns',
       subtitle: `${stageCounts[3] ?? 0} words across 22 rules`,
       accent: theme.colors.stage3,
-      route: null,
+      route: '/stage3',
     },
     {
       stage: 4,
