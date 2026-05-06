@@ -6,6 +6,7 @@ A Spanish vocabulary iOS app. V0 is the stripped-down reading version: swipeable
 
 - This is V0. Respect the scope boundary below strictly.
 - Always run `npx tsc --noEmit` after writing TypeScript. Don't commit broken types.
+- **Always run `@reviewer` before committing.** Surface blockers/concerns to the user and only commit after the user approves (either fix-then-commit or accept-and-commit).
 - Always commit after each completed task with a clear message.
 - The card swiper component is the single most important piece. Build it well, every stage uses it.
 - When unsure, the simpler version is correct.

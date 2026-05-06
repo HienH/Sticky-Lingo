@@ -101,11 +101,12 @@ export default function Stage2() {
         <Text style={styles.backText}>← Categories</Text>
       </Pressable>
       <CardSwiper
+        key={category}
         data={filtered}
         renderCard={(word) => <FlipCard word={word} />}
         onCardChange={(index) => {
           const w = filtered[index];
-          if (w) markSeen(w.id);
+          if (w) markSeen(w.stage, w.spanish_word);
         }}
       />
       <StatusBar style="auto" />
@@ -115,12 +116,14 @@ export default function Stage2() {
 
 function FlipCard({ word }: { word: Word }) {
   const [flipped, setFlipped] = useState(false);
+  const hasExample = !!word.example_sentence;
   return (
     <Pressable
       style={styles.card}
       onPress={() => setFlipped((f) => !f)}
+      disabled={!hasExample}
     >
-      {flipped ? (
+      {flipped && hasExample ? (
         <>
           <Text style={styles.backLabel}>Example</Text>
           <Text style={styles.example}>{word.example_sentence}</Text>
@@ -135,7 +138,9 @@ function FlipCard({ word }: { word: Word }) {
           {word.english_meaning ? (
             <Text style={styles.meaning}>{word.english_meaning}</Text>
           ) : null}
-          <Text style={styles.tapHint}>tap for example</Text>
+          {hasExample ? (
+            <Text style={styles.tapHint}>tap for example</Text>
+          ) : null}
         </>
       )}
     </Pressable>

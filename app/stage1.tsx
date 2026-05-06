@@ -65,7 +65,7 @@ export default function Stage1() {
         )}
         onCardChange={(index) => {
           const w = words[index];
-          if (w) markSeen(w.id);
+          if (w) markSeen(w.stage, w.spanish_word);
         }}
       />
       <StatusBar style="auto" />
