@@ -48,3 +48,7 @@ scripts/venv/
 # generated native folders
 /ios
 /android
+
+# local agent + planning notes
+.claude/
+tasks/

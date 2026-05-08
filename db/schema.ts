@@ -11,13 +11,23 @@ CREATE TABLE IF NOT EXISTS words (
   verb_family TEXT,
   conjugations TEXT,
   category TEXT,
-  stage INTEGER NOT NULL,
-  UNIQUE (spanish_word, stage)
+  subsection TEXT,
+  stage INTEGER NOT NULL
 );
 `;
 
 export const CREATE_WORDS_STAGE_INDEX = `
 CREATE INDEX IF NOT EXISTS idx_words_stage ON words (stage);
+`;
+
+// Same Spanish word can appear in multiple subsections of one stage
+// (e.g. exterior as both NOUN and ADJECTIVE on Stage 5; caballo as both
+// PICTIONARY and ANIMAL on Stage 2). COALESCE keeps NULL-subsection rows
+// (Stages 3, 6, 8, and Stage 7 past-participles) from being treated as
+// distinct under SQLite's NULL-not-equal-NULL rule.
+export const CREATE_WORDS_UNIQUE_INDEX = `
+CREATE UNIQUE INDEX IF NOT EXISTS idx_words_unique
+ON words (spanish_word, stage, COALESCE(subsection, ''));
 `;
 
 export const CREATE_PATTERNS_TABLE = `
@@ -75,6 +85,7 @@ export type WordRow = {
   verb_family: string | null;
   conjugations: string | null;
   category: string | null;
+  subsection: string | null;
   stage: number;
 };
 

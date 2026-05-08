@@ -22,7 +22,7 @@ A Spanish vocabulary iOS app. V0 is the stripped-down reading version: swipeable
 
 ## V0 Scope Boundary
 
-V0 is a passive, offline, read-only swipe experience. The only interactions are: swipe (next/prev), tap (flip card), and one typing input on Stage 3 pattern tests.
+V0 is a passive, offline, read-only swipe experience. The only interactions are: swipe (next/prev), tap (flip card on Stage 5), and one typing input on Stage 6 pattern tests.
 
 STOP and ask before adding any of these:
 - Audio, TTS, or sound effects
@@ -30,7 +30,6 @@ STOP and ask before adding any of these:
 - Auth, accounts, Supabase, IAP, RevenueCat
 - Practice mode, games, gamification, streaks, XP
 - Full-screen overlays, modals beyond simple flips
-- Stage 5 content (placeholder screen only)
 
 ## Tech Stack
 
@@ -64,66 +63,75 @@ Brand identity: warm and approachable. Coral primary (#FF6B5B), generous whitesp
 `data/spanish_english_cognates.xlsx` contains all word data across **8 sheets** (~1300 rows total). Parse it, don't hardcode.
 
 The parser is `scripts/import_data.py` (uses `openpyxl`, dev-only — see `scripts/requirements.txt`). It emits four JSON files committed to the repo:
-- `data/words.json` — all swipeable cards (Stages 1–4)
-- `data/patterns.json` — English→Spanish ending rewrites (Stage 3 reference, 22 rules)
-- `data/false_friends.json` — anti-cognates reference data
+- `data/words.json` — all swipeable word cards (Stages 1–7)
+- `data/patterns.json` — English→Spanish ending rewrites (Stage 6 reference + Pattern Cheat Sheet tab, 22 rules)
+- `data/false_friends.json` — Stage 8 source data (35 anti-cognates)
 - `data/cheat_sheets.json` — grammar reference content (gender rules, -ería suffix, past participles, WEIRDO subjunctive, vowel-swap rule, LONERS/DIJON, VIN DIESEL — 7 sections from the Pattern Cheat Sheet sheet that don't fit the ending-rewrite schema)
 
 The runtime seeder in `db/client.ts` reads all four and runs `INSERT OR IGNORE`, so re-running is safe.
 
-### Sheet → destination mapping
+### Sheet → stage mapping
+
+V0 is sheet-aligned: each spreadsheet sheet maps to its own home-screen stage. The only derived stage is Stage 7 (Verbs), because verbs come from two sheets.
 
 | Sheet | Rows | Destination | Field mapping |
 |---|---|---|---|
-| Easy Associations | 222 | `words` Stage 1 | `memory_hook` ← "English Association / Memory Hook" col; `category` ← Type |
-| Smart Hooks | 260 | `words` Stage 1 | `memory_hook` ← "Memory Hook" (+ Pictionary if present); `category` ← Hook Type |
-| Themed Cognates | 64 | `words` Stage 1 | `category` ← Theme; no memory hook |
-| Spanish for Spanish | 100 | `words` Stage 1 | Two sub-sections. **Standard rows** (top of sheet): `memory_hook` ← Breakdown + " — " + "How it teaches itself"; `category` = "Compound". **CONFUSING PAIRS** sub-section (rows 82+, schema `[spanish_A, eng_A, spanish_B, eng_B, trick]`): each row emits TWO Stage 1 cards (one per word), both sharing the trick as `memory_hook`; `category` = "Confusing pair". The literal template row "Word A / Meaning A / Word B / Meaning B" is skipped. Cells like `"veso/beso"` use the second (standard) spelling. Confusing pairs are emitted last in the Stage 1 pipeline so dedupe by `(spanish_word, stage)` keeps better hooks from earlier sheets when a word appears in both. |
-| Formal English = Spanish | 227 | `words` Stage 2 + dual-write verbs to Stage 4 | `formal_english`, `english_meaning`, `category` (Daily/Business/Medical) |
-| Cognates by Pattern | 380 | `words` Stage 3 | `pattern_id` ← Pattern Rule string |
-| Pattern Cheat Sheet | 156 | `patterns` table (rows 2–23, 22 rules) + `cheat_sheets` table (rows 25+, 7 sections) | Patterns block: english_ending → spanish_ending → example → count_estimate → reliability. Cheat sheets block: each section becomes one row keyed by `section` slug, with `content_json` blob = `{column_headers, rows, sub_headers, footnotes}` preserving the spreadsheet shape verbatim. |
-| False Friends (Watch Out) | 35 | `false_friends` table (reference) | spanish_word, looks_like, actually_means, real_spanish, example_sentence |
+| Easy Associations | 222 | `words` Stage 1 | `memory_hook` ← "English Association / Memory Hook" col; `category` ← Type; `subsection` ← section header (7 groups, e.g. "BRAND NAMES THAT ARE SPANISH WORDS") |
+| Smart Hooks | 260 | `words` Stage 2 | `memory_hook` ← "Memory Hook" (+ Pictionary if present); `category` ← Hook Type; `subsection` ← section header (14 groups, e.g. "PREFIXES (word-building multiplier)", "ANIMALS") |
+| Themed Cognates | 64 | `words` Stage 3 | `category` ← Theme; no memory hook; `subsection` = null (already grouped via Theme/category) |
+| Spanish for Spanish | 100 | `words` Stage 4 | Three sub-sections, each driven by a section-header banner: **COMPOUND WORDS (mini-sentences)**: `memory_hook` ← Breakdown + " — " + "How it teaches itself"; `category` = "Compound". **WORD FAMILIES (one root = many words)**: same column shape as Compound; `category` = "Word family". **CONFUSING PAIRS (memorize one, get the other free)**: schema `[spanish_A, eng_A, spanish_B, eng_B, trick]`; each row emits TWO Stage 4 cards, both sharing the trick; `category` = "Confusing pair". The literal template row "Word A / Meaning A / Word B / Meaning B" is skipped. Cells like `"veso/beso"` use the second (standard) spelling. `subsection` ← verbatim section-header text on every emitted card. |
+| Formal English = Spanish | 227 | `words` Stage 5 + dual-write verbs to Stage 7 | `formal_english`, `english_meaning`, `category` (Daily/Business/Medical), `subsection` ← section header (VERBS / NOUNS / ADJECTIVES). Stage 5 sub-picker uses `subsection`; `category` is rendered as a small chip on each card. |
+| Cognates by Pattern | 380 | `words` Stage 6 | `pattern_id` ← Pattern Rule string; `subsection` = null (Stage 6 picker uses `pattern_id`) |
+| Pattern Cheat Sheet | 156 | `patterns` table (rows 2–23, 22 rules) + `cheat_sheets` table (rows 25+, 7 sections); past-participle rows also promoted to Stage 7 | Patterns block: english_ending → spanish_ending → example → count_estimate → reliability. Cheat sheets block: each section becomes one row keyed by `section` slug, with `content_json` blob = `{column_headers, rows, sub_headers, footnotes}` preserving the spreadsheet shape verbatim. |
+| False Friends (Watch Out) | 35 | `false_friends` table → Stage 8 cards | spanish_word, looks_like, actually_means, real_spanish, example_sentence |
 
 **Notes**
-- Skip section-header rows (uppercase row in col 0, all other cols empty) — e.g. "VERBS", "PATTERN: -tion → -ción".
+- Skip section-header rows (uppercase row in col 0, all other cols empty) — e.g. "VERBS", "PATTERN: -tion → -ción". The header text is captured into the `subsection` field on each row that follows it (Stages 1, 2, 4, 5).
 - The "Memory Hook" column already exists in the spreadsheet for sheets that have one; never invent or hardcode hooks for sheets without it.
-- Verbs from the "Formal English = Spanish" sheet are dual-written: kept in Stage 2 *and* copied to Stage 4. Stage 4 also gets 20–30 hardcoded common verbs added separately later.
-- False Friends are captured now for future UI; not surfaced in V0.
-- Cheat sheet sections are captured now for future UI; not surfaced in V0. Section slugs are stable: `gender_rules`, `eria_suffix`, `past_participles`, `subjunctive_weirdo`, `subjunctive_vowel_swap`, `loners_dijon`, `vin_diesel`. The importer must fix two title/body misalignments in the source xlsx: the `NICE TO HAVE` banner (row 104) is a category divider, not a footnote on past participles; the `VIN DIESEL: irregular command verbs` header (row 145) is the real title for section 7, not a footnote on LONERS/DIJON.
-- **-ería belongs in `cheat_sheets`, NOT `patterns`.** The `patterns` table is for English→Spanish ending rewrites (e.g. `-tion → -ción`); -ería is a Spanish-internal derivational suffix (`pan → panadería`) with no English ending involved.
-
-### Done in V0 (formerly deferred)
-- ✅ **-ería section** dual-written into Stage 1 cards (39 net new). Each row emits a derived "shop" card (`category="-ería suffix"`, hook `"base (meaning) + -ería = derived"`) and a base card (`category="-ería base"`); cross-sheet dedupe drops base words already in earlier Stage-1 sheets so the better hook wins. Source content stays in `cheat_sheets.eria_suffix` for future reference UI.
-- ✅ **Past participles section** promoted to Stage 4 verb cards (31 verbs across `-ar/-er/-ir/irregular`, `category="Past participle: <group>"`). Source content stays in `cheat_sheets.past_participles`.
+- **Stage 7 is the only derived stage**: verbs from "Formal English = Spanish" are dual-written (kept in Stage 5 *and* copied to Stage 7) with `subsection = "VERBS"`, and 31 past-participle example verbs are promoted from `cheat_sheets.past_participles` with `subsection = null`. Stage 7 has no sub-picker, so dedupe ignores `subsection` for Stage 7 — past-participle cards shadow Formal-English Stage 7 cards on the 3 overlaps (decidir, descubrir, resolver). Those still appear as Stage 5 cards.
+- **No cross-sheet dedupe**: a Spanish word that appears in multiple sheets now appears in each sheet's stage. Within-sheet dedupe is by `(spanish_word, stage, subsection)` — same word can co-exist in different subsections of one stage (e.g. `exterior` is both a NOUN and an ADJECTIVE on Stage 5; `caballo` is both a PICTIONARY card and an ANIMAL on Stage 2).
+- Cheat sheet sections are captured now for future UI; only `past_participles` is currently surfaced (as Stage 7 cards). Section slugs are stable: `gender_rules`, `eria_suffix`, `past_participles`, `subjunctive_weirdo`, `subjunctive_vowel_swap`, `loners_dijon`, `vin_diesel`. The importer must fix two title/body misalignments in the source xlsx: the `NICE TO HAVE` banner (row 104) is a category divider, not a footnote on past participles; the `VIN DIESEL: irregular command verbs` header (row 145) is the real title for section 7, not a footnote on LONERS/DIJON.
+- **-ería belongs in `cheat_sheets`, NOT `patterns`.** The `patterns` table is for English→Spanish ending rewrites (e.g. `-tion → -ción`); -ería is a Spanish-internal derivational suffix (`pan → panadería`) with no English ending involved. Under sheet=stage, -ería is reference-only — it does NOT promote to any swipeable stage.
 
 ### Deferred opportunities (V1, not V0)
+- **-ería section** lives only in `cheat_sheets.eria_suffix`. If a V1 reference UI surfaces it, render the section content directly; do not re-promote to Stage 1.
 - **Gender rules + LONERS/DIJON** overlap heavily; if a "gender quiz" feature ever appears, both sections can feed a normalized `gender_rules (ending, gender, reliability, exceptions[])` table. For V0, leave as two separate `cheat_sheets` rows since the source author intentionally presents them as different mnemonics.
 
 ## Stages
 
-### Stage 1: Easy Words (652 words from 5 sources)
-Sources: Easy Associations (215), Smart Hooks (246), Themed Cognates (64), Spanish for Spanish (88 standard + 19 net new from CONFUSING PAIRS, after dedupe), -ería suffix promotions (~39 net new: 23 derived "shop" words + 16 base words not already covered by earlier sheets).
-Card: emoji + Spanish word + memory hook (when present). No English translation needed.
+Each spreadsheet sheet is its own stage (sheet = stage). Stage 7 is the only derived stage.
 
-### Stage 2: Formal English (221 words)
-Source sheet: "Formal English = Spanish" (227 raw rows; 3 section-header rows skipped + 3 NOUNS/ADJECTIVES collisions merged into single cards with both meanings → 221 emitted). The 3 merged cards (`exterior`, `inferior`, `superior`) carry combined `english_meaning` like `"outside (n.) / outer (adj.)"`. Card: emoji + Spanish word + formal English cognate + everyday English meaning. Tap to flip for example sentence. Grouped by category (Daily, Business, Medical) — user picks category first, then swipes.
+### Stage 1: Easy Associations (215 words, 7 subsections)
+Source: "Easy Associations" sheet (222 raw rows; 7 section headers skipped → 215, exact 1:1 with sheet data rows). Sub-picker by `subsection` (e.g. "BRAND NAMES THAT ARE SPANISH WORDS", "BODY PARTS", "FOOD WORDS YOU ALREADY USE"); user picks one, then swipes. Card: emoji + Spanish word + memory hook.
 
-### Stage 3: Cognates by Pattern (~20 patterns, 366 words)
-Source sheets: "Cognates by Pattern" (380 raw rows; 14 PATTERN section-header rows skipped → 366 emitted) + "Pattern Cheat Sheet" (22 ending rules in `patterns` table). First screen: ~20 patterns as tappable cards. Tap pattern → swipeable deck for that pattern. Last card in each deck: typing input to test conversion (accept with or without accents).
+### Stage 2: Smart Hooks (246 words, 14 subsections)
+Source: "Smart Hooks" sheet (260 raw rows; 14 section headers skipped → 246, exact 1:1 with sheet data rows). Sub-picker by `subsection` (e.g. "PREFIXES", "ANIMALS", "PICTIONARY WORDS"). Card: emoji + Spanish word + memory hook (+ Pictionary appended if present). Same Spanish word can appear in multiple subsections (caballo, perro, gato, lobo, cerdo each appear under both PICTIONARY and ANIMALS — 5 cards × 2 subsections).
 
-### Stage 4: Verbs (132 verbs)
-Sources: verbs from "Formal English" sheet (dual-written by importer, 101 cognate verbs after Stage-4 dedupe) + 31 past-participle example verbs promoted from the cheat_sheets `past_participles` section (`-ar: 8`, `-er: 6`, `-ir: 5`, irregular: 12). Past-participle verbs win the dedupe over Formal English cognates for 3 overlaps (`decidir`, `descubrir`, `resolver`) — those still appear as Stage 2 cards. First screen: conjugation cheat sheet (-AR/-ER/-IR rules, yo/tú/él). Then swipeable verb cards: infinitive, English meaning, verb family tag, conjugations, mini example sentence. (`conjugations` is `null` on every imported verb today; population comes when a hardcoded verb list is added later if needed — the 132 cards may already be enough.)
+### Stage 3: Themed Cognates (64 words)
+Source: "Themed Cognates" sheet (64 raw rows). Card: emoji + Spanish word + English meaning + theme label. No memory hook. No sub-picker — `Theme` lives in `category` and is shown inline.
 
-### Stage 5: Coming Soon
-Placeholder screen only.
+### Stage 4: Spanish for Spanish (119 words, 3 subsections)
+Source: "Spanish for Spanish" sheet (33 Compound + 39 Word Family standard rows + 47 confusing-pair cards = 119 after dedupe). Sub-picker by `subsection`: COMPOUND WORDS / WORD FAMILIES / CONFUSING PAIRS. Card: emoji + Spanish word + memory hook.
+
+### Stage 5: Formal English (224 words, 3 subsections)
+Source: "Formal English = Spanish" sheet (224 raw rows after section-header skips; exact 1:1 with sheet data rows). Sub-picker by `subsection`: VERBS / NOUNS / ADJECTIVES. Words like `exterior`, `inferior`, `superior` appear in both NOUNS and ADJECTIVES with their respective meanings. Card: small `category` chip (Daily/Business/Medical) + Spanish word + formal English cognate + everyday English meaning. Tap to flip for example sentence.
+
+### Stage 6: Cognates by Pattern (~20 patterns, 366 words)
+Source: "Cognates by Pattern" sheet (380 raw rows; 14 PATTERN section-header rows skipped → 366 emitted). First screen: ~20 patterns as tappable cards. Tap pattern → swipeable deck for that pattern. Last card in each deck: typing input to test conversion (accept with or without accents). Picker uses `pattern_id`, not `subsection`.
+
+### Stage 7: Verbs (combined) (132 verbs)
+The only derived stage. Sources: 104 cognate verbs dual-written from "Formal English = Spanish" (subsection="VERBS") + 31 past-participle example verbs promoted from `cheat_sheets.past_participles` (subsection=null). Stage 7 dedupe ignores `subsection` so past-participle cards shadow Formal-English Stage 7 cards on 3 overlaps (`decidir`, `descubrir`, `resolver`). Those still appear as Stage 5 cards. First screen: conjugation cheat sheet (-AR/-ER/-IR rules, yo/tú/él) — past-participle decks show a participle-rules variant instead. Then swipeable verb cards: infinitive, English meaning, verb family tag, mini example sentence. No sub-picker.
+
+### Stage 8: False Friends (35 cards)
+Source: "False Friends (Watch Out)" sheet, read via `getFalseFriends()` (not `words` table). Card: spanish_word in bold, "Looks like" / "Actually means" / "For '<looks_like>' use" rows, example sentence. No memory hook field — false friends use their own row schema.
 
 ## Always-Visible UI
 
-### Word Counter (home screen, top right)
-Increments when user swipes past a word for the first time. Shows total + noun/verb/adjective split. Persists across restarts via Zustand + AsyncStorage.
+### Card Counter (home screen, top right)
+Increments when user swipes past a card for the first time. Total = `words.json` rows + `false_friends.json` rows (currently 1366 + 35 = 1401). Persists across restarts via Zustand + AsyncStorage. Persist version is **2**; v1 → v2 reset `seenKeys` because stage numbering changed from 1–4 to 1–8 and the old `${stage}:${word}` keys would otherwise be ambiguous.
 
 ### Pattern Cheat Sheet Tab
-Always accessible from tab navigator. Scrollable reference of the 22 ending-rewrite rules in the `patterns` table. English ending → Spanish ending → example → reliability. The 7 grammar reference sections in `cheat_sheets` (gender, subjunctive, irregulars, etc.) are NOT surfaced in V0 — captured for V1 reference UI.
+Always accessible from tab navigator. Scrollable reference of the 22 ending-rewrite rules in the `patterns` table. English ending → Spanish ending → example → reliability. The 7 grammar reference sections in `cheat_sheets` (gender, -ería, subjunctive, past participles, irregulars, etc.) are stored but NOT surfaced as a reference UI in V0 — `past_participles` is the only one currently consumed (by Stage 7 cards).
 
 ## Onboarding (first launch only)
 
@@ -172,12 +180,16 @@ When tasks are independent, spawn agents in parallel. When sequential, chain the
 
 (Update this section after each completed task.)
 
-- `theme/index.ts` — design tokens (colors, typography, spacing, radius, shadow), Nunito font loading.
+- `theme/index.ts` — design tokens (colors, typography, spacing, radius, shadow), Nunito font loading. 8 stage accent colors (stage1–stage8), warm→cool sequence.
 - `db/schema.ts` — four tables:
-  - `words` (Stages 1–4, with `memory_hook`, `pattern_id`, etc.) — UNIQUE on `(spanish_word, stage)`
+  - `words` (Stages 1–7, with `memory_hook`, `pattern_id`, `subsection`, etc.) — UNIQUE INDEX on `(spanish_word, stage, COALESCE(subsection, ''))` so the same word can co-exist in different subsections of one stage
   - `patterns` (Pattern Cheat Sheet ending rewrites) — UNIQUE on `(english_ending, spanish_ending)`
-  - `false_friends` (anti-cognates reference) — UNIQUE on `spanish_word`
+  - `false_friends` (Stage 8 source) — UNIQUE on `spanish_word`
   - `cheat_sheets` (grammar reference content, 7 sections) — UNIQUE on `section`
-- `db/client.ts` — `initDB()` creates all 4 tables + indices and runs `seedFromJSON()` (single transaction, `INSERT OR IGNORE` for all 4 datasets, count-check gate to skip on already-seeded DBs). `getWordsByStage(stage)` getter present. No runtime write functions; user state lives in Zustand.
-- `scripts/import_data.py` — parses xlsx → emits `data/words.json` (1371 rows: stage1=652, stage2=221, stage3=366, stage4=132), `data/patterns.json` (22), `data/false_friends.json` (35), `data/cheat_sheets.json` (7 sections). Idempotent — byte-identical re-runs. Promotes -ería pairs to Stage 1 and past participles to Stage 4 from cheat_sheets data; merges NOUN/ADJ duplicates in Formal English into single cards instead of dropping.
+- `db/client.ts` — `initDB()` creates all 4 tables + indices and runs `seedFromJSON()` (single transaction, `INSERT OR IGNORE` for all 4 datasets, count-check gate to skip on already-seeded DBs). `getWordsByStage(stage)` and `getFalseFriends()` getters present. No runtime write functions; user state lives in Zustand.
+- `scripts/import_data.py` — parses xlsx → emits `data/words.json` (1366 rows: stage1=215, stage2=246, stage3=64, stage4=119, stage5=224, stage6=366, stage7=132), `data/patterns.json` (22), `data/false_friends.json` (35), `data/cheat_sheets.json` (7 sections). Idempotent — byte-identical re-runs. Sheet-aligned: each sheet emits its own stage with row counts matching the sheet's data rows 1:1 (Stages 1, 2, 3, 5, 6 exact; Stage 4 expands confusing-pair rows 1→2 cards each; Stages 7 derived). Captures section-header text into the `subsection` field on Stages 1, 2, 4, 5. Promotes past-participle verbs to Stage 7. -ería section is parsed but stays reference-only (does not promote to any stage).
 - `scripts/requirements.txt` — pins `openpyxl`.
+- `state/progress.ts` — Zustand store, persisted via AsyncStorage. Persist `version: 2` — v1 → v2 migration resets `seenKeys` because stage numbering shifted.
+- `utils/format.ts` — `sentenceCase()` helper for displaying SHOUTY xlsx subsection labels (e.g. "BRAND NAMES THAT ARE SPANISH WORDS" → "Brand names that are spanish words"). Source data stays verbatim.
+- `app/(home)/` — 8 stage routes (`stage1.tsx`–`stage8.tsx`) + `index.tsx` (8 home tiles) + `_layout.tsx` (Stack). Stages 1, 2, 4 each have a `subsection` sub-picker (Stage 6 model), then a swiper. Stage 3 is a simple swiper (no picker, theme shown inline). Stage 5 is Formal English with `subsection` sub-picker (VERBS/NOUNS/ADJECTIVES) + tap-to-flip example, `category` (Daily/Business/Medical) shown as small chip on each card. Stage 6 is Patterns with pattern sub-picker + typing quiz on the last card. Stage 7 is Verbs with conjugation/past-participle cheat-sheet first card + verb cards (no sub-picker). Stage 8 is False Friends with a custom multi-row card (no sub-picker).
+- `app/cheatsheet.tsx` — always-visible Patterns reference tab.

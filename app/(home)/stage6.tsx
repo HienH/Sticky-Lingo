@@ -12,11 +12,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CardSwiper } from '../components/CardSwiper';
-import { getWordsByStage, initDB } from '../db/client';
-import type { Word } from '../db/schema';
-import { useProgress } from '../state/progress';
-import { theme } from '../theme';
+import { CardSwiper } from '../../components/CardSwiper';
+import { getWordsByStage, initDB } from '../../db/client';
+import type { Word } from '../../db/schema';
+import { useProgress } from '../../state/progress';
+import { theme } from '../../theme';
 
 type DeckItem =
   | { kind: 'word'; word: Word }
@@ -28,7 +28,7 @@ type DeckItem =
 const norm = (s: string) =>
   s.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '').trim();
 
-export default function Stage3() {
+export default function Stage6() {
   const [words, setWords] = useState<Word[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pattern, setPattern] = useState<string | null>(null);
@@ -39,8 +39,8 @@ export default function Stage3() {
     (async () => {
       try {
         await initDB();
-        const stage3 = await getWordsByStage(3);
-        if (!cancelled) setWords(stage3);
+        const stage6 = await getWordsByStage(6);
+        if (!cancelled) setWords(stage6);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load words');

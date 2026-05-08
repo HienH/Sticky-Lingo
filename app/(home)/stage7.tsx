@@ -9,11 +9,11 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CardSwiper } from '../components/CardSwiper';
-import { getWordsByStage, initDB } from '../db/client';
-import type { Word } from '../db/schema';
-import { useProgress } from '../state/progress';
-import { theme } from '../theme';
+import { CardSwiper } from '../../components/CardSwiper';
+import { getWordsByStage, initDB } from '../../db/client';
+import type { Word } from '../../db/schema';
+import { useProgress } from '../../state/progress';
+import { theme } from '../../theme';
 
 type CheatSheetVariant = 'present' | 'participle';
 
@@ -59,7 +59,7 @@ function participleFor(infinitive: string, category: string | null): string | nu
   return null;
 }
 
-export default function Stage4() {
+export default function Stage7() {
   const [words, setWords] = useState<Word[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
@@ -70,8 +70,8 @@ export default function Stage4() {
     (async () => {
       try {
         await initDB();
-        const stage4 = await getWordsByStage(4);
-        if (!cancelled) setWords(stage4);
+        const stage7 = await getWordsByStage(7);
+        if (!cancelled) setWords(stage7);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load words');
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     ...theme.shadow.card,
   },
   categoryRowPressed: {
-    backgroundColor: theme.colors.stage4,
+    backgroundColor: theme.colors.stage7,
   },
   categoryName: {
     fontFamily: theme.typography.fontFamily.bold,
@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingVertical: theme.spacing.xs,
     paddingHorizontal: theme.spacing.md,
-    backgroundColor: theme.colors.stage4,
+    backgroundColor: theme.colors.stage7,
     borderRadius: theme.radius.full,
   },
   familyPillText: {

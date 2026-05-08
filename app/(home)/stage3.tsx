@@ -2,13 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CardSwiper } from '../components/CardSwiper';
-import { getWordsByStage, initDB } from '../db/client';
-import type { Word } from '../db/schema';
-import { useProgress } from '../state/progress';
-import { theme } from '../theme';
+import { CardSwiper } from '../../components/CardSwiper';
+import { getWordsByStage, initDB } from '../../db/client';
+import type { Word } from '../../db/schema';
+import { useProgress } from '../../state/progress';
+import { theme } from '../../theme';
 
-export default function Stage1() {
+export default function Stage3() {
   const [words, setWords] = useState<Word[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const markSeen = useProgress((s) => s.markSeen);
@@ -18,8 +18,8 @@ export default function Stage1() {
     (async () => {
       try {
         await initDB();
-        const stage1 = await getWordsByStage(1);
-        if (!cancelled) setWords(stage1);
+        const stage3 = await getWordsByStage(3);
+        if (!cancelled) setWords(stage3);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load words');
@@ -59,8 +59,11 @@ export default function Stage1() {
             <Text style={[styles.word, !word.emoji && styles.wordNoEmoji]}>
               {word.spanish_word}
             </Text>
-            {word.memory_hook ? (
-              <Text style={styles.hook}>{word.memory_hook}</Text>
+            {word.english_meaning ? (
+              <Text style={styles.meaning}>{word.english_meaning}</Text>
+            ) : null}
+            {word.category ? (
+              <Text style={styles.category}>{word.category}</Text>
             ) : null}
           </View>
         )}
@@ -115,12 +118,19 @@ const styles = StyleSheet.create({
   wordNoEmoji: {
     fontSize: theme.typography.size.display * 1.1,
   },
-  hook: {
+  meaning: {
     fontFamily: theme.typography.fontFamily.regular,
     fontSize: theme.typography.size.md,
     color: theme.colors.textSecondary,
     textAlign: 'center',
+    marginTop: theme.spacing.md,
+  },
+  category: {
+    fontFamily: theme.typography.fontFamily.semibold,
+    fontSize: theme.typography.size.xs,
+    color: theme.colors.textTertiary,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
     marginTop: theme.spacing.lg,
-    lineHeight: theme.typography.size.md * theme.typography.lineHeight.normal,
   },
 });

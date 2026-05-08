@@ -22,7 +22,17 @@ export const useProgress = create<ProgressState>()(
     {
       name: 'sticky-lingo-progress',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 1,
+      version: 2,
+      // v1 → v2: stage numbering changed from 1–4 (sheets merged) to 1–8
+      // (one stage per sheet). Old `${stage}:${word}` keys are now ambiguous,
+      // so reset the seen set on first launch after upgrade.
+      migrate: (state: unknown, fromVersion: number): ProgressState => {
+        const prev = (state ?? {}) as Partial<ProgressState>;
+        if (fromVersion < 2) {
+          return { ...(prev as ProgressState), seenKeys: {} };
+        }
+        return prev as ProgressState;
+      },
     },
   ),
 );

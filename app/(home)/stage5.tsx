@@ -9,16 +9,17 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { CardSwiper } from '../components/CardSwiper';
-import { getWordsByStage, initDB } from '../db/client';
-import type { Word } from '../db/schema';
-import { useProgress } from '../state/progress';
-import { theme } from '../theme';
+import { CardSwiper } from '../../components/CardSwiper';
+import { getWordsByStage, initDB } from '../../db/client';
+import type { Word } from '../../db/schema';
+import { useProgress } from '../../state/progress';
+import { theme } from '../../theme';
+import { sentenceCase } from '../../utils/format';
 
-export default function Stage2() {
+export default function Stage5() {
   const [words, setWords] = useState<Word[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [category, setCategory] = useState<string | null>(null);
+  const [subsection, setSubsection] = useState<string | null>(null);
   const markSeen = useProgress((s) => s.markSeen);
 
   useEffect(() => {
@@ -26,8 +27,8 @@ export default function Stage2() {
     (async () => {
       try {
         await initDB();
-        const stage2 = await getWordsByStage(2);
-        if (!cancelled) setWords(stage2);
+        const stage5 = await getWordsByStage(5);
+        if (!cancelled) setWords(stage5);
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : 'Failed to load words');
@@ -39,11 +40,11 @@ export default function Stage2() {
     };
   }, []);
 
-  const categories = useMemo(() => {
+  const subsections = useMemo(() => {
     if (!words) return [];
     const counts = new Map<string, number>();
     for (const w of words) {
-      const key = w.category ?? 'Other';
+      const key = w.subsection ?? 'Other';
       counts.set(key, (counts.get(key) ?? 0) + 1);
     }
     return Array.from(counts.entries())
@@ -52,9 +53,9 @@ export default function Stage2() {
   }, [words]);
 
   const filtered = useMemo(() => {
-    if (!words || !category) return [];
-    return words.filter((w) => (w.category ?? 'Other') === category);
-  }, [words, category]);
+    if (!words || !subsection) return [];
+    return words.filter((w) => (w.subsection ?? 'Other') === subsection);
+  }, [words, subsection]);
 
   if (error) {
     return (
@@ -72,24 +73,24 @@ export default function Stage2() {
     );
   }
 
-  if (!category) {
+  if (!subsection) {
     return (
       <SafeAreaView style={styles.root} edges={['top']}>
         <ScrollView contentContainerStyle={styles.pickerContent}>
           <Text style={styles.pickerTitle}>Pick a category</Text>
-          {categories.map((c) => (
+          {subsections.map((s) => (
             <Pressable
-              key={c.name}
+              key={s.name}
               accessibilityRole="button"
-              accessibilityLabel={`${c.name}, ${c.count} words`}
+              accessibilityLabel={`${sentenceCase(s.name)}, ${s.count} words`}
               style={({ pressed }) => [
                 styles.categoryRow,
                 pressed && styles.categoryRowPressed,
               ]}
-              onPress={() => setCategory(c.name)}
+              onPress={() => setSubsection(s.name)}
             >
-              <Text style={styles.categoryName}>{c.name}</Text>
-              <Text style={styles.categoryCount}>{c.count}</Text>
+              <Text style={styles.categoryName}>{sentenceCase(s.name)}</Text>
+              <Text style={styles.categoryCount}>{s.count}</Text>
             </Pressable>
           ))}
         </ScrollView>
@@ -102,7 +103,7 @@ export default function Stage2() {
     <SafeAreaView style={styles.root} edges={['top']}>
       <Pressable
         style={styles.backButton}
-        onPress={() => setCategory(null)}
+        onPress={() => setSubsection(null)}
         accessibilityRole="button"
         accessibilityLabel="Back to categories"
         hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
@@ -110,7 +111,7 @@ export default function Stage2() {
         <Text style={styles.backText}>← Categories</Text>
       </Pressable>
       <CardSwiper
-        key={category}
+        key={subsection}
         data={filtered}
         renderCard={(word) => <FlipCard word={word} />}
         onCardChange={(index) => {
@@ -136,6 +137,7 @@ function FlipCard({ word }: { word: Word }) {
         flipped && hasExample
           ? `Example: ${word.example_sentence}. Tap to flip back.`
           : [
+              word.category,
               word.spanish_word,
               word.formal_english,
               word.english_meaning,
@@ -153,6 +155,9 @@ function FlipCard({ word }: { word: Word }) {
           </>
         ) : (
           <>
+            {word.category ? (
+              <Text style={styles.categoryChip}>{word.category}</Text>
+            ) : null}
             <Text style={styles.word}>{word.spanish_word}</Text>
             {word.formal_english ? (
               <Text style={styles.formal}>{word.formal_english}</Text>
@@ -213,12 +218,14 @@ const styles = StyleSheet.create({
     ...theme.shadow.card,
   },
   categoryRowPressed: {
-    backgroundColor: theme.colors.stage2,
+    backgroundColor: theme.colors.stage5,
   },
   categoryName: {
     fontFamily: theme.typography.fontFamily.bold,
-    fontSize: theme.typography.size.lg,
+    fontSize: theme.typography.size.md,
     color: theme.colors.textPrimary,
+    flex: 1,
+    paddingRight: theme.spacing.md,
   },
   categoryCount: {
     fontFamily: theme.typography.fontFamily.semibold,
@@ -250,6 +257,14 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  categoryChip: {
+    fontFamily: theme.typography.fontFamily.semibold,
+    fontSize: theme.typography.size.xs,
+    color: theme.colors.textTertiary,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+    marginBottom: theme.spacing.md,
   },
   word: {
     fontFamily: theme.typography.fontFamily.bold,

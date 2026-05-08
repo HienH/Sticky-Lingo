@@ -126,8 +126,8 @@ export function CardSwiper<T>({ data, renderCard, onCardChange }: Props<T>) {
       </View>
       <GestureDetector gesture={pan}>
         <Animated.View style={[styles.cardWrap, animatedStyle]}>
-          {/* key per index forces remount so per-card state (Stage 2 flip,
-              Stage 3 typing) doesn't leak across swipes */}
+          {/* key per index forces remount so per-card state (Stage 5 flip,
+              Stage 6 typing) doesn't leak across swipes */}
           <View key={safeIndex} style={styles.cardSlot}>
             {renderCard(data[safeIndex], safeIndex)}
           </View>

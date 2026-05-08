@@ -12,12 +12,18 @@ import {
   CREATE_PATTERNS_TABLE,
   CREATE_WORDS_STAGE_INDEX,
   CREATE_WORDS_TABLE,
+  CREATE_WORDS_UNIQUE_INDEX,
   Conjugations,
+  FalseFriendRow,
   Word,
   WordRow,
 } from './schema';
 
-const DB_NAME = 'stickylingo.db';
+// Bumped from 'stickylingo.db' when the words table gained the `subsection`
+// column. CREATE TABLE IF NOT EXISTS won't add a column to an existing table,
+// so installed apps with the v1 schema would crash on the new UNIQUE INDEX
+// that references subsection. A new filename forces a fresh DB on next launch.
+const DB_NAME = 'stickylingo.v2.db';
 
 let dbPromise: Promise<SQLite.SQLiteDatabase> | null = null;
 
@@ -36,6 +42,7 @@ export async function initDB(): Promise<void> {
     const db = await getDB();
     await db.execAsync(CREATE_WORDS_TABLE);
     await db.execAsync(CREATE_WORDS_STAGE_INDEX);
+    await db.execAsync(CREATE_WORDS_UNIQUE_INDEX);
     await db.execAsync(CREATE_PATTERNS_TABLE);
     await db.execAsync(CREATE_FALSE_FRIENDS_TABLE);
     await db.execAsync(CREATE_CHEAT_SHEETS_TABLE);
@@ -58,6 +65,7 @@ type WordSeed = {
   verb_family: string | null;
   conjugations: string | null;
   category: string | null;
+  subsection: string | null;
   stage: number;
 };
 
@@ -106,8 +114,8 @@ async function seedFromJSON(db: SQLite.SQLiteDatabase): Promise<void> {
     for (const w of words) {
       await db.runAsync(
         `INSERT OR IGNORE INTO words
-         (spanish_word, english_meaning, formal_english, example_sentence, emoji, memory_hook, pattern_id, verb_family, conjugations, category, stage)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         (spanish_word, english_meaning, formal_english, example_sentence, emoji, memory_hook, pattern_id, verb_family, conjugations, category, subsection, stage)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         w.spanish_word,
         w.english_meaning,
         w.formal_english,
@@ -118,6 +126,7 @@ async function seedFromJSON(db: SQLite.SQLiteDatabase): Promise<void> {
         w.verb_family,
         w.conjugations,
         w.category,
+        w.subsection,
         w.stage,
       );
     }
@@ -170,6 +179,13 @@ export async function getWordsByStage(stage: number): Promise<Word[]> {
     stage,
   );
   return rows.map(rowToWord);
+}
+
+export async function getFalseFriends(): Promise<FalseFriendRow[]> {
+  const db = await getDB();
+  return db.getAllAsync<FalseFriendRow>(
+    'SELECT * FROM false_friends ORDER BY id ASC',
+  );
 }
 
 function rowToWord(row: WordRow): Word {

@@ -30,12 +30,16 @@ export const colors = {
   success: '#4CAF50',
   error: '#E53935',
 
-  // Stage accents (subtle, used sparingly)
-  stage1: '#FFE4E0', // easy words - lightest coral tint
-  stage2: '#E0F2F1', // formal english
-  stage3: '#FFF3E0', // patterns
-  stage4: '#F3E5F5', // verbs
-  stage5: '#ECEFF1', // coming soon
+  // Stage accents (subtle, used sparingly).
+  // One accent per source sheet, warm → cool sequence.
+  stage1: '#FFE4E0', // Easy Associations — light coral
+  stage2: '#FFF8E1', // Smart Hooks — cream / amber
+  stage3: '#E8F5E9', // Themed Cognates — mint
+  stage4: '#FCE4EC', // Spanish for Spanish — pink
+  stage5: '#E0F2F1', // Formal English — teal
+  stage6: '#FFF3E0', // Cognates by Pattern — peach
+  stage7: '#F3E5F5', // Verbs (combined) — lavender
+  stage8: '#FFEBEE', // False Friends — soft caution red
 } as const;
 
 export const typography = {

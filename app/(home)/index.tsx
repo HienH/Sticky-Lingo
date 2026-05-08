@@ -3,63 +3,99 @@ import { StatusBar } from 'expo-status-bar';
 import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import wordsData from '../data/words.json';
-import { selectSeenCount, useProgress } from '../state/progress';
-import { theme } from '../theme';
+import falseFriendsData from '../../data/false_friends.json';
+import wordsData from '../../data/words.json';
+import { selectSeenCount, useProgress } from '../../state/progress';
+import { theme } from '../../theme';
+
+type StageRoute =
+  | '/stage1'
+  | '/stage2'
+  | '/stage3'
+  | '/stage4'
+  | '/stage5'
+  | '/stage6'
+  | '/stage7'
+  | '/stage8';
 
 type StageTile = {
   stage: number;
   title: string;
   subtitle: string;
   accent: string;
-  route: '/stage1' | '/stage2' | '/stage3' | '/stage4' | null;
+  route: StageRoute;
 };
 
 export default function Home() {
   const router = useRouter();
   const seenCount = useProgress(selectSeenCount);
 
-  const { totalWords, stageCounts } = useMemo(() => {
+  const { totalCards, stageCounts, falseFriendCount } = useMemo(() => {
     const counts: Record<number, number> = {};
     for (const w of wordsData) counts[w.stage] = (counts[w.stage] ?? 0) + 1;
-    return { totalWords: wordsData.length, stageCounts: counts };
+    return {
+      totalCards: wordsData.length + falseFriendsData.length,
+      stageCounts: counts,
+      falseFriendCount: falseFriendsData.length,
+    };
   }, []);
 
   const tiles: StageTile[] = [
     {
       stage: 1,
-      title: 'Easy Words',
+      title: 'Easy Associations',
       subtitle: `${stageCounts[1] ?? 0} cognates you already know`,
       accent: theme.colors.stage1,
       route: '/stage1',
     },
     {
       stage: 2,
-      title: 'Formal English',
-      subtitle: `${stageCounts[2] ?? 0} fancy words`,
+      title: 'Smart Hooks',
+      subtitle: `${stageCounts[2] ?? 0} memory hooks`,
       accent: theme.colors.stage2,
       route: '/stage2',
     },
     {
       stage: 3,
-      title: 'Patterns',
-      subtitle: `${stageCounts[3] ?? 0} words across 22 rules`,
+      title: 'Themed Cognates',
+      subtitle: `${stageCounts[3] ?? 0} grouped by theme`,
       accent: theme.colors.stage3,
       route: '/stage3',
     },
     {
       stage: 4,
-      title: 'Verbs',
-      subtitle: `${stageCounts[4] ?? 0} verbs`,
+      title: 'Spanish for Spanish',
+      subtitle: `${stageCounts[4] ?? 0} compound words & confusing pairs`,
       accent: theme.colors.stage4,
       route: '/stage4',
     },
     {
       stage: 5,
-      title: 'Coming Soon',
-      subtitle: '',
+      title: 'Formal English',
+      subtitle: `${stageCounts[5] ?? 0} fancy words`,
       accent: theme.colors.stage5,
-      route: null,
+      route: '/stage5',
+    },
+    {
+      stage: 6,
+      title: 'Patterns',
+      subtitle: `${stageCounts[6] ?? 0} words across 22 rules`,
+      accent: theme.colors.stage6,
+      route: '/stage6',
+    },
+    {
+      stage: 7,
+      title: 'Verbs',
+      subtitle: `${stageCounts[7] ?? 0} verbs`,
+      accent: theme.colors.stage7,
+      route: '/stage7',
+    },
+    {
+      stage: 8,
+      title: 'False Friends',
+      subtitle: `${falseFriendCount} look-alikes that lie`,
+      accent: theme.colors.stage8,
+      route: '/stage8',
     },
   ];
 
@@ -80,49 +116,36 @@ export default function Home() {
         <View
           style={styles.counter}
           accessible
-          accessibilityLabel={`${seenCount} of ${totalWords} words seen`}
+          accessibilityLabel={`${seenCount} of ${totalCards} cards seen`}
         >
           <Text style={styles.counterValue}>{seenCount}</Text>
-          <Text style={styles.counterTotal}>/ {totalWords}</Text>
+          <Text style={styles.counterTotal}>/ {totalCards}</Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.tilesContent}>
-        {tiles.map((t) => {
-          const disabled = t.route === null;
-          const route = t.route;
-          return (
-            <Pressable
-              key={t.stage}
-              disabled={disabled}
-              onPress={() => {
-                if (route) router.push(route);
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={
-                disabled
-                  ? `Stage ${t.stage}: ${t.title} (coming soon)`
-                  : `Stage ${t.stage}: ${t.title}. ${t.subtitle}`
-              }
-              accessibilityState={{ disabled }}
-              style={({ pressed }) => [
-                styles.tile,
-                { backgroundColor: t.accent },
-                pressed && !disabled && styles.tilePressed,
-                disabled && styles.tileDisabled,
-              ]}
-            >
-              <View style={styles.tileTextWrap}>
-                <Text style={styles.tileStage}>STAGE {t.stage}</Text>
-                <Text style={styles.tileTitle}>{t.title}</Text>
-                {t.subtitle ? (
-                  <Text style={styles.tileSubtitle}>{t.subtitle}</Text>
-                ) : null}
-              </View>
-              {!disabled ? <Text style={styles.tileArrow}>→</Text> : null}
-            </Pressable>
-          );
-        })}
+        {tiles.map((t) => (
+          <Pressable
+            key={t.stage}
+            onPress={() => router.push(t.route)}
+            accessibilityRole="button"
+            accessibilityLabel={`Stage ${t.stage}: ${t.title}. ${t.subtitle}`}
+            style={({ pressed }) => [
+              styles.tile,
+              { backgroundColor: t.accent },
+              pressed && styles.tilePressed,
+            ]}
+          >
+            <View style={styles.tileTextWrap}>
+              <Text style={styles.tileStage}>STAGE {t.stage}</Text>
+              <Text style={styles.tileTitle}>{t.title}</Text>
+              {t.subtitle ? (
+                <Text style={styles.tileSubtitle}>{t.subtitle}</Text>
+              ) : null}
+            </View>
+            <Text style={styles.tileArrow}>→</Text>
+          </Pressable>
+        ))}
       </ScrollView>
       <StatusBar style="auto" />
     </SafeAreaView>
@@ -181,9 +204,6 @@ const styles = StyleSheet.create({
   },
   tilePressed: {
     opacity: 0.85,
-  },
-  tileDisabled: {
-    opacity: 0.6,
   },
   tileTextWrap: {
     flex: 1,
